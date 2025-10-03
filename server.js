@@ -8,7 +8,7 @@ const app = express();
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
-// Sajikan file statis (bg, sounds, dll)
+// Sajikan file statis langsung dari root (bg, sounds, dll)
 app.use(express.static(__dirname));
 
 // Sajikan index.html untuk route utama
@@ -150,9 +150,17 @@ wss.on('connection', (ws) => {
                 tiktokLiveConnection.disconnect();
             }
 
-            tiktokLiveConnection = new WebcastPushConnection(username, {
+            // opsi sign server default (lokal)
+            let options = {
                 signServerUrl: "http://127.0.0.1:8080/signature"
-            });
+            };
+
+            // jika ada environment variable SIGN_SERVER_DOMAIN, ganti otomatis
+            if (process.env.SIGN_SERVER_DOMAIN) {
+                options.signServerUrl = `${process.env.SIGN_SERVER_DOMAIN}/signature`;
+            }
+
+            tiktokLiveConnection = new WebcastPushConnection(username, options);
 
             setupTikTokListeners();
 
