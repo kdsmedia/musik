@@ -160,9 +160,8 @@ wss.on('connection', (ws) => {
             }
 
             console.log(`Mencoba terhubung ke @${username}...`);
-            tiktokLiveConnection = new WebcastPushConnection(username, {
-                signServerUrl: "http://127.0.0.1:8080/signature" // pakai sign server lokal
-            });
+            // REVISI KRUSIAL: Menghapus signServerUrl
+            tiktokLiveConnection = new WebcastPushConnection(username); 
 
             setupTikTokListeners();
 
