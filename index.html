@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -5,6 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BulTok TikTok Live Stream Interactive | By Sidhanie</title>
     <style>
+        :root {
+            --primary-color: #007bff;
+            --primary-hover-color: #0056b3;
+            --background-dark: rgba(30, 30, 45, 0.9);
+            --text-light: #f0f0f0;
+            --input-bg: #2a2a3a;
+            --border-color: #4a4a5a;
+        }
+
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -54,6 +64,11 @@
             line-height: 50px;
             cursor: pointer;
             z-index: 9000;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        #settingsButton:hover {
+            transform: rotate(90deg);
         }
 
         #settingsPopup {
@@ -62,65 +77,74 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background-color: #fff;
-            border: 1px solid #007bff;
+            background-color: var(--background-dark);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--primary-color);
+            color: var(--text-light);
             padding: 20px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5);
             z-index: 10000;
-            border-radius: 8px;
+            border-radius: 12px;
             width: 90%;
-            max-width: 320px;
+            max-width: 340px;
+        }
+
+        #settingsPopup h2, #settingsPopup h3 {
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
             text-align: center;
         }
 
-        #settingsPopup h2 {
-            margin-top: 0;
-            margin-bottom: 1.5rem;
-            color: #007bff;
-        }
-
-        #settingsPopup label {
-            display: block;
-            margin-bottom: 0.5rem;
-            text-align: left;
-        }
-
-        #settingsPopup div {
+        #settingsPopup .setting-row {
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: space-between;
             margin-bottom: 1rem;
         }
 
-        #settingsPopup div label {
+        #settingsPopup label {
             margin-bottom: 0;
-            margin-left: 0.5rem;
         }
 
         #settingsPopup input[type="text"], 
-        #settingsPopup select,
-        #settingsPopup input[type="range"] {
+        #settingsPopup select {
             width: 100%;
-            padding: 8px;
-            margin-bottom: 10px;
+            padding: 10px;
+            margin-bottom: 1rem;
             box-sizing: border-box;
-            border: 1px solid #007bff;
+            background-color: var(--input-bg);
+            color: var(--text-light);
+            border: 1px solid var(--border-color);
             border-radius: 5px;
+            transition: border-color 0.3s;
+        }
+
+        #settingsPopup input[type="text"]:focus, 
+        #settingsPopup select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        #settingsPopup input[type="range"] {
+            width: 60%;
         }
 
         #settingsPopup button {
             width: 100%;
-            padding: 10px;
-            background-color: #007bff;
+            padding: 12px;
+            background-color: var(--primary-color);
             color: #fff;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             margin-top: 5px;
+            transition: background-color 0.3s;
+            font-size: 1rem;
         }
 
         #settingsPopup button:hover {
-            background-color: #0056b3;
+            background-color: var(--primary-hover-color);
         }
 
         #settingsPopup #closeButton {
@@ -130,6 +154,13 @@
         #settingsPopup #closeButton:hover {
             background-color: #5a6268;
         }
+        
+        #settingsPopup h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+            border-top: 1px solid var(--border-color);
+            padding-top: 1rem;
+        }
 
         #overlay {
             display: none;
@@ -138,11 +169,57 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: rgba(0, 0, 0, 0.7);
             z-index: 9999;
         }
 
-        .floating-photo, .big-photo {
+        /* Toggle Switch styles */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input { 
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .floating-photo {
             position: absolute;
             width: 50px;
             height: 50px;
@@ -153,23 +230,57 @@
             pointer-events: none;
             z-index: 1000;
             transition: transform 5s ease-in-out, opacity 1s;
-        }
-
-        .big-photo {
-            width: 300px;
-            height: 300px;
-            display: none;
-            border-radius: 50%;
-            padding: 15px;
-        }
-
-        .floating-photo {
             border: 5px solid limegreen;
             box-shadow: 0 0 10px limegreen;
         }
 
+        .big-photo {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background-size: cover;
+            background-position: center;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5);
+            pointer-events: none;
+            z-index: 9999;
+            /* Initial state for transition */
+            transform: translate(-50%, -50%) scale(0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease-out, visibility 0.4s;
+        }
+
         .big-photo.show {
-            display: block;
+            /* Visible state */
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Animasi Hati Terbang untuk Like */
+        @keyframes flyUp {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-80vh) scale(0.5);
+                opacity: 0;
+            }
+        }
+
+        .flying-heart {
+            position: fixed;
+            bottom: 20px; /* Mulai dari bawah */
+            font-size: 2rem; /* Ukuran emoji hati */
+            color: red;
+            pointer-events: none;
+            z-index: 9998; /* Di bawah popup pengaturan */
+            animation: flyUp 4s ease-out forwards;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.7);
         }
     </style>
 </head>
@@ -184,7 +295,7 @@
         <label for="usernameInput" class="sr-only">Nama Pengguna TikTok</label>
         <input type="text" id="usernameInput" placeholder="Masukkan nama pengguna TikTok" />
 
-        <label for="backgroundSelect">Pilih Latar Belakang:</label>
+        <label for="backgroundSelect" class="sr-only">Pilih Latar Belakang</label>
         <select id="backgroundSelect">
             <option value="bg/bg0.jpeg">DEFAULT</option>
             <option value="bg/bg1.jpeg">BG 1</option>
@@ -200,20 +311,30 @@
             <option value="bg/bg11.jpg">BG 11</option>
         </select>
 
-        <div>
-          <input type="checkbox" id="enableBackground" />
+        <div class="setting-row">
           <label for="enableBackground">Aktifkan Latar Belakang</label>
+          <label class="switch">
+            <input type="checkbox" id="enableBackground" checked/>
+            <span class="slider"></span>
+          </label>
         </div>
 
-        <label for="volumeKomentar">Volume Suara Komentar:</label>
-        <input type="range" id="volumeKomentar" min="0" max="1" step="0.01" value="0.5" />
-
-        <label for="volumeMusik">Volume Musik:</label>
-        <input type="range" id="volumeMusik" min="0" max="1" step="0.01" value="0.5" />
+        <div class="setting-row">
+            <label for="volumeKomentar">Volume Suara Komentar</label>
+            <input type="range" id="volumeKomentar" min="0" max="1" step="0.01" value="0.5" />
+        </div>
         
-        <div>
-          <input type="checkbox" id="enableTTS" />
+        <div class="setting-row">
+            <label for="volumeMusik">Volume Musik</label>
+            <input type="range" id="volumeMusik" min="0" max="1" step="0.01" value="0.5" />
+        </div>
+        
+        <div class="setting-row">
           <label for="enableTTS">Aktifkan Text-to-Speech (TTS)</label>
+          <label class="switch">
+            <input type="checkbox" id="enableTTS" />
+            <span class="slider"></span>
+          </label>
         </div>
 
         <button id="connectButton">Hubungkan</button>
@@ -221,7 +342,12 @@
     </div>
 
     <script>
-        let ws;
+    document.addEventListener('DOMContentLoaded', () => {
+        // Tentukan URL WebSocket secara dinamis, dengan fallback ke localhost untuk development.
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const host = window.location.host || 'localhost:3000';
+        const ws = new WebSocket(`${protocol}//${host}`);
+
         let isPlaying = false;
         let currentAudio = null;
         let backgroundMusic = null;
@@ -241,63 +367,59 @@
         const backgroundSelect = document.getElementById('backgroundSelect');
         const enableTTS = document.getElementById('enableTTS');
 
-        // ✅ WebSocket auto protocol + reconnect
-        function connectWebSocket() {
-            const protocol = window.location.protocol === "https:" ? "wss" : "ws";
-            ws = new WebSocket(`${protocol}://${window.location.host}`);
+        ws.onopen = () => {
+            console.log('WebSocket connection established.');
+        };
 
-            ws.onopen = () => {
-                console.log("WebSocket connection established.");
-            };
+        ws.onmessage = (event) => {
+            try {
+                const data = JSON.parse(event.data);
+                console.log('Message from server:', data);
 
-            ws.onmessage = (event) => {
-                try {
-                    const data = JSON.parse(event.data);
-                    console.log("Message from server:", data);
-
-                    switch (data.type) {
-                        case "floating-photo":
-                            showFloatingPhoto(data.profilePictureUrl, data.userName);
-                            break;
-                        case "big-photo":
-                            showBigPhoto(data.profilePictureUrl, data.userName);
-                            break;
-                        case "play-sound":
-                            playSound(data.sound);
-                            break;
-                        case "stop-sound":
-                            stopCurrentSound();
-                            break;
-                        case "play-music":
-                            playBackgroundMusic(data.sound);
-                            break;
-                        case "tts-greeting":
-                            speak(data.greeting);
-                            break;
-                        case "chat":
-                            speak(`${data.userName} bilang, ${data.comment}`);
-                            break;
-                        case "connection-failed":
-                            alert(data.message);
-                            break;
-                        default:
-                            // Abaikan tipe pesan tidak dikenal
-                    }
-                } catch (error) {
-                    console.error("Failed to parse WebSocket message:", error);
+                switch (data.type) {
+                    case 'floating-photo':
+                        showFloatingPhoto(data.profilePictureUrl, data.userName);
+                        break;
+                    case 'big-photo':
+                        showBigPhoto(data.profilePictureUrl, data.userName);
+                        break;
+                    case 'play-sound':
+                        playSound(data.sound);
+                        break;
+                    case 'stop-sound':
+                        stopCurrentSound();
+                        break;
+                    case 'play-music':
+                        playBackgroundMusic(data.sound);
+                        break;
+                    case 'tts-greeting':
+                        speak(data.greeting);
+                        break;
+                    case 'chat':
+                        speak(`${data.userName} bilang, ${data.comment}`);
+                        break;
+                    case 'like':
+                        showFlyingHeart();
+                        break;
+                    case 'connection-failed':
+                        alert(data.message);
+                        break;
+                    default:
+                        // Ignore unknown message types
                 }
-            };
+            } catch (error) {
+                console.error("Failed to parse WebSocket message:", error);
+            }
+        };
 
-            ws.onerror = (error) => {
-                console.error("WebSocket Error:", error);
-            };
+        ws.onerror = (error) => {
+            console.error('WebSocket Error:', error);
+            alert('Koneksi ke server gagal. Pastikan server berjalan dan coba segarkan halaman.');
+        };
 
-            ws.onclose = () => {
-                console.log("WebSocket connection closed. Reconnecting in 3s...");
-                setTimeout(connectWebSocket, 3000);
-            };
-        }
-        connectWebSocket();
+        ws.onclose = () => {
+            console.log('WebSocket connection closed.');
+        };
 
         function showFloatingPhoto(pictureUrl, userName) {
             const floatingImage = document.createElement('img');
@@ -315,13 +437,15 @@
                 floatingImage.style.transform = `translate(${x}px, ${y}px)`;
             };
             
-            animateImage();
+            animateImage(); // Initial position
             const animationInterval = setInterval(animateImage, 5000);
 
             setTimeout(() => {
-                floatingImage.style.opacity = 0;
+                floatingImage.style.opacity = '0';
                 clearInterval(animationInterval);
-                setTimeout(() => floatingImage.remove(), 1000);
+                setTimeout(() => {
+                    floatingImage.remove();
+                }, 1000);
             }, 10000);
         }
 
@@ -331,46 +455,58 @@
             bigPhotoDiv.style.backgroundImage = `url(${pictureUrl})`;
             bigPhotoDiv.setAttribute('role', 'img');
             bigPhotoDiv.setAttribute('aria-label', `Foto profil besar dari ${userName}`);
-
             document.body.appendChild(bigPhotoDiv);
-
-            bigPhotoDiv.style.position = 'fixed';
-            bigPhotoDiv.style.top = '50%';
-            bigPhotoDiv.style.left = '50%';
-            bigPhotoDiv.style.transform = 'translate(-50%, -50%) scale(0.5)';
-            bigPhotoDiv.style.opacity = '0';
-            bigPhotoDiv.style.transition = 'transform 0.5s ease, opacity 0.5s ease';
-            bigPhotoDiv.style.zIndex = '9999';
 
             setTimeout(() => {
                 bigPhotoDiv.classList.add('show');
-                bigPhotoDiv.style.transform = 'translate(-50%, -50%) scale(1)';
-                bigPhotoDiv.style.opacity = '1';
             }, 100);
 
             setTimeout(() => {
-                bigPhotoDiv.style.transform = 'translate(-50%, -50%) scale(0.5)';
-                bigPhotoDiv.style.opacity = '0';
-                setTimeout(() => bigPhotoDiv.remove(), 500);
+                bigPhotoDiv.classList.remove('show');
+                setTimeout(() => {
+                    bigPhotoDiv.remove();
+                }, 500);
             }, 10000);
+        }
+
+        function showFlyingHeart() {
+            const heart = document.createElement('span');
+            heart.classList.add('flying-heart');
+            heart.innerHTML = '❤️';
+            document.body.appendChild(heart);
+
+            const duration = Math.random() * 2 + 3;
+            const size = Math.random() * 1.5 + 1;
+            const startX = Math.random() * (window.innerWidth - 40);
+
+            heart.style.left = `${startX}px`;
+            heart.style.fontSize = `${size}rem`;
+            heart.style.animationDuration = `${duration}s`;
+
+            setTimeout(() => {
+                heart.remove();
+            }, duration * 1000);
         }
 
         function playSound(soundUrl) {
             if (isPlaying) return;
+
             currentAudio = new Audio(soundUrl);
             currentAudio.volume = currentKomentarVolume;
             currentAudio.play().catch(e => console.error("Error playing audio:", e));
             isPlaying = true;
+
             currentAudio.onended = () => {
                 isPlaying = false;
                 currentAudio = null;
             };
         }
-        
+
         function stopCurrentSound() {
             if (isPlaying && currentAudio) {
                 currentAudio.pause();
                 currentAudio.currentTime = 0;
+                currentAudio.onended = null;
                 currentAudio = null;
                 isPlaying = false;
             }
@@ -389,65 +525,86 @@
         }
 
         function speak(text) {
-            if (!isTTSEnabled || !('speechSynthesis' in window)) return;
+            if (!isTTSEnabled || !('speechSynthesis' in window)) {
+                return;
+            }
+            
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = 'id-ID';
             window.speechSynthesis.speak(utterance);
         }
 
-        settingsButton.addEventListener('click', () => {
+        function openSettings() {
+            if (!settingsPopup || !overlay || !volumeKomentar || !volumeMusik || !enableTTS) return;
             settingsPopup.style.display = 'block';
             overlay.style.display = 'block';
             volumeKomentar.value = currentKomentarVolume;
             volumeMusik.value = currentMusikVolume;
             enableTTS.checked = isTTSEnabled;
-        });
+        }
 
-        closeButton.addEventListener('click', () => {
+        function closeSettings() {
+            if (!settingsPopup || !overlay) return;
             settingsPopup.style.display = 'none';
             overlay.style.display = 'none';
-        });
+        }
 
-        connectButton.addEventListener('click', () => {
+        function connectToTikTok() {
+            if (!usernameInput) {
+                alert('Elemen input nama pengguna tidak ditemukan.');
+                return;
+            }
             const username = usernameInput.value.trim();
             if (username) {
                 if (ws.readyState === WebSocket.OPEN) {
-                    ws.send(JSON.stringify({ type: 'connect', username }));
-                    settingsPopup.style.display = 'none';
-                    overlay.style.display = 'none';
+                    ws.send(JSON.stringify({ type: 'connect', username: username }));
+                    closeSettings();
                 } else {
                     alert('Koneksi WebSocket belum siap. Silakan coba lagi.');
                 }
             } else {
                 alert('Silakan masukkan nama pengguna.');
             }
-        });
-
-        volumeKomentar.addEventListener('input', (e) => {
-            currentKomentarVolume = e.target.value;
-            if (currentAudio) currentAudio.volume = currentKomentarVolume;
-        });
-
-        volumeMusik.addEventListener('input', (e) => {
-            currentMusikVolume = e.target.value;
-            if (backgroundMusic) backgroundMusic.volume = currentMusikVolume;
-        });
- 
-        enableTTS.addEventListener('change', (e) => {
-            isTTSEnabled = e.target.checked;
-        });
+        }
 
         function updateBackground() {
+            if (!enableBackground || !backgroundSelect) return;
             if (enableBackground.checked) {
                 const selectedBackground = backgroundSelect.value;
                 document.body.style.backgroundImage = `url('${selectedBackground}')`;
             } else {
-                document.body.style.backgroundImage = "url('bg/bg0.jpeg')"; // fallback default
+                document.body.style.backgroundImage = 'none';
+                document.body.style.backgroundColor = '#121212';
             }
         }
-        enableBackground.addEventListener('change', updateBackground);
-        backgroundSelect.addEventListener('change', updateBackground);
+        
+        settingsButton?.addEventListener('click', openSettings);
+        closeButton?.addEventListener('click', closeSettings);
+        connectButton?.addEventListener('click', connectToTikTok);
+
+        volumeKomentar?.addEventListener('input', (event) => {
+            currentKomentarVolume = parseFloat(event.target.value);
+            if (currentAudio) {
+                currentAudio.volume = currentKomentarVolume;
+            }
+        });
+
+        volumeMusik?.addEventListener('input', (event) => {
+            currentMusikVolume = parseFloat(event.target.value);
+            if (backgroundMusic) {
+                backgroundMusic.volume = currentMusikVolume;
+            }
+        });
+
+        enableTTS?.addEventListener('change', (event) => {
+            isTTSEnabled = event.target.checked;
+        });
+
+        enableBackground?.addEventListener('change', updateBackground);
+        backgroundSelect?.addEventListener('change', updateBackground);
+
         updateBackground();
+    });
     </script>
 </body>
 </html>
