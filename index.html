@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BulTok TikTok Live Stream Interactive | By Sidhanie</title>
+    <title>ALTO TikTok Live Stream Interactive | By Sidhanie</title>
     <style>
         :root {
             --primary-color: #007bff;
@@ -120,13 +120,13 @@
         let isTTSEnabled = false;
 
         function initializeWebSocket() {
-            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const host = window.location.host || 'localhost:3000';
+            // FIX: langsung gunakan domain dengan SSL
+            const wsUrl = "wss://altomedia.xcodehoster.biz.id";
 
             connectButton.textContent = 'Menyambungkan...';
             connectButton.disabled = true;
 
-            ws = new WebSocket(`${protocol}//${host}`);
+            ws = new WebSocket(wsUrl);
 
             ws.onopen = () => {
                 console.log('WebSocket connection established.');
@@ -179,13 +179,14 @@
 
             ws.onerror = (error) => {
                 console.error('WebSocket Error:', error);
+                connectButton.textContent = 'Hubungkan';
+                connectButton.disabled = false;
             };
 
             ws.onclose = () => {
-                console.log('WebSocket connection closed. Attempting to reconnect...');
+                console.log('WebSocket connection closed.');
                 connectButton.textContent = 'Hubungkan';
                 connectButton.disabled = false;
-                setTimeout(initializeWebSocket, 3000);
             };
         }
 
