@@ -349,10 +349,6 @@
 
     <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // Tentukan URL WebSocket secara dinamis, dengan fallback ke localhost untuk development.
-        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-        const host = window.location.host || 'localhost:3000';
-        
         const settingsButton = document.getElementById('settingsButton');
         const settingsPopup = document.getElementById('settingsPopup');
         const overlay = document.getElementById('overlay');
@@ -365,6 +361,7 @@
         const backgroundSelect = document.getElementById('backgroundSelect');
         const enableTTS = document.getElementById('enableTTS');
 
+        let ws;
         let isPlaying = false;
         let currentAudio = null;
         let backgroundMusic = null;
@@ -372,71 +369,76 @@
         let currentMusikVolume = 0.5;
         let isTTSEnabled = false;
 
-        // Set initial button state to indicate connecting
-        connectButton.textContent = 'Menyambungkan...';
-        connectButton.disabled = true;
+        function initializeWebSocket() {
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const host = window.location.host || 'localhost:3000';
 
-        const ws = new WebSocket(`${protocol}//${host}`);
+            connectButton.textContent = 'Menyambungkan...';
+            connectButton.disabled = true;
 
-        ws.onopen = () => {
-            console.log('WebSocket connection established.');
-            connectButton.textContent = 'Hubungkan';
-            connectButton.disabled = false;
-        };
+            ws = new WebSocket(`${protocol}//${host}`);
 
-        ws.onmessage = (event) => {
-            try {
-                const data = JSON.parse(event.data);
-                console.log('Message from server:', data);
+            ws.onopen = () => {
+                console.log('WebSocket connection established.');
+                connectButton.textContent = 'Hubungkan';
+                connectButton.disabled = false;
+            };
 
-                switch (data.type) {
-                    case 'floating-photo':
-                        showFloatingPhoto(data.profilePictureUrl, data.userName);
-                        break;
-                    case 'big-photo':
-                        showBigPhoto(data.profilePictureUrl, data.userName);
-                        break;
-                    case 'play-sound':
-                        playSound(data.sound);
-                        break;
-                    case 'stop-sound':
-                        stopCurrentSound();
-                        break;
-                    case 'play-music':
-                        playBackgroundMusic(data.sound);
-                        break;
-                    case 'tts-greeting':
-                        speak(data.greeting);
-                        break;
-                    case 'chat':
-                        speak(`${data.userName} bilang, ${data.comment}`);
-                        break;
-                    case 'like':
-                        showFlyingHeart();
-                        break;
-                    case 'connection-failed':
-                        alert(data.message);
-                        break;
-                    default:
-                        // Ignore unknown message types
+            ws.onmessage = (event) => {
+                try {
+                    const data = JSON.parse(event.data);
+                    console.log('Message from server:', data);
+
+                    switch (data.type) {
+                        case 'floating-photo':
+                            showFloatingPhoto(data.profilePictureUrl, data.userName);
+                            break;
+                        case 'big-photo':
+                            showBigPhoto(data.profilePictureUrl, data.userName);
+                            break;
+                        case 'play-sound':
+                            playSound(data.sound);
+                            break;
+                        case 'stop-sound':
+                            stopCurrentSound();
+                            break;
+                        case 'play-music':
+                            playBackgroundMusic(data.sound);
+                            break;
+                        case 'tts-greeting':
+                            speak(data.greeting);
+                            break;
+                        case 'chat':
+                            speak(`${data.userName} bilang, ${data.comment}`);
+                            break;
+                        case 'like':
+                            showFlyingHeart();
+                            break;
+                        case 'connection-failed':
+                            alert(data.message);
+                            break;
+                        default:
+                            // Ignore unknown message types
+                    }
+                } catch (error) {
+                    console.error("Failed to parse WebSocket message:", error);
                 }
-            } catch (error) {
-                console.error("Failed to parse WebSocket message:", error);
-            }
-        };
+            };
 
-        ws.onerror = (error) => {
-            console.error('WebSocket Error:', error);
-            connectButton.textContent = 'Koneksi Gagal';
-            connectButton.disabled = true;
-            alert('Koneksi WebSocket GAGAL. Pastikan server berjalan dan coba segarkan halaman.');
-        };
+            ws.onerror = (error) => {
+                console.error('WebSocket Error:', error);
+                // The onclose event will handle the UI update and reconnection attempt.
+            };
 
-        ws.onclose = () => {
-            console.log('WebSocket connection closed.');
-            connectButton.textContent = 'Terputus';
-            connectButton.disabled = true;
-        };
+            ws.onclose = () => {
+                console.log('WebSocket connection closed. Attempting to reconnect in 3 seconds...');
+                connectButton.textContent = 'Terputus. Menyambung ulang...';
+                connectButton.disabled = true;
+                
+                // Automatically try to reconnect after a delay
+                setTimeout(initializeWebSocket, 3000);
+            };
+        }
 
         function showFloatingPhoto(pictureUrl, userName) {
             const floatingImage = document.createElement('img');
@@ -573,11 +575,11 @@
             }
             const username = usernameInput.value.trim();
             if (username) {
-                if (ws.readyState === WebSocket.OPEN) {
+                if (ws && ws.readyState === WebSocket.OPEN) {
                     ws.send(JSON.stringify({ type: 'connect', username: username }));
                     closeSettings();
                 } else {
-                    alert('Koneksi WebSocket belum siap. Silakan coba lagi.');
+                    alert('Koneksi WebSocket belum siap. Silakan tunggu hingga tersambung kembali.');
                 }
             } else {
                 alert('Silakan masukkan nama pengguna.');
@@ -607,7 +609,7 @@
         });
 
         volumeMusik?.addEventListener('input', (event) => {
-            currentMusikVolume = parseFloat(event.target.value);
+            currentKomentarVolume = parseFloat(event.target.value);
             if (backgroundMusic) {
                 backgroundMusic.volume = currentMusikVolume;
             }
@@ -619,7 +621,9 @@
 
         enableBackground?.addEventListener('change', updateBackground);
         backgroundSelect?.addEventListener('change', updateBackground);
-
+        
+        // Initial setup
+        initializeWebSocket();
         updateBackground();
     });
     </script>
