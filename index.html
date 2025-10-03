@@ -1,497 +1,174 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BulTok TikTok Live Stream Interactive | By Sidhanie</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            background-image: url('bg/bg0.jpeg'); /* Default background image */
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            height: 100vh;
-            width: 100vw;
-            color: #333;
-        }
-
-        .sr-only {
-        position: absolute;
-        width: 1px;
-        height: 1px;
-        padding: 0;
-        margin: -1px;
-        overflow: hidden;
-        clip: rect(0, 0, 0, 0);
-        white-space: nowrap;
-        border-width: 0;
-        }
-
-
-        /* Adjust for smaller devices */
-        @media (max-width: 768px) {
-            body {
-                background-attachment: scroll; /* Disable fixed background on small screens */
-            }
-        }
-
-        #settingsButton {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: transparent;
-            color: #fff;
-            text-shadow: 0 0 5px black;
-            border: none;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            font-size: 24px;
-            text-align: center;
-            line-height: 50px;
-            cursor: pointer;
-            z-index: 9000;
-        }
-
-        #settingsPopup {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: #fff;
-            border: 1px solid #007bff;
-            padding: 20px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            z-index: 10000;
-            border-radius: 8px;
-            width: 90%;
-            max-width: 320px;
-            text-align: center;
-        }
-
-        #settingsPopup h2 {
-            margin-top: 0;
-            margin-bottom: 1.5rem;
-            color: #007bff;
-        }
-
-        #settingsPopup label {
-            display: block;
-            margin-bottom: 0.5rem;
-            text-align: left;
-        }
-
-        #settingsPopup div {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1rem;
-        }
-
-        #settingsPopup div label {
-            margin-bottom: 0;
-            margin-left: 0.5rem;
-        }
-
-        #settingsPopup input[type="text"], 
-        #settingsPopup select,
-        #settingsPopup input[type="range"] {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 10px;
-            box-sizing: border-box;
-            border: 1px solid #007bff;
-            border-radius: 5px;
-        }
-
-        #settingsPopup button {
-            width: 100%;
-            padding: 10px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 5px;
-            /* Tambahkan transisi di CSS untuk tombol */
-            transition: background-color 0.3s ease;
-        }
-
-        #settingsPopup button:hover {
-            background-color: #0056b3;
-        }
-
-        #settingsPopup #closeButton {
-            background-color: #6c757d;
-        }
-
-        #settingsPopup #closeButton:hover {
-            background-color: #5a6268;
-        }
-
-        #overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 9999;
-        }
-
-        .floating-photo, .big-photo {
-            position: absolute;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background-size: cover;
-            background-position: center;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-            pointer-events: none;
-            z-index: 1000;
-            transition: transform 5s ease-in-out, opacity 1s;
-        }
-
-        .big-photo {
-            width: 300px;
-            height: 300px;
-            display: none;
-            border-radius: 50%;
-            padding: 15px;
-        }
-
-        .floating-photo {
-            border: 5px solid limegreen;
-            box-shadow: 0 0 10px limegreen;
-        }
-
-        .big-photo.show {
-            display: block;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>KangTok Live Interactive</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-        <button id="settingsButton" aria-label="Buka Pengaturan">&#9881;</button>
+<body class="bg-gray-900 text-white">
 
-        <div id="overlay"></div>
-    <div id="settingsPopup" role="dialog" aria-labelledby="settingsTitle" aria-modal="true">
-        <h2 id="settingsTitle">Pengaturan</h2>
-        <label for="usernameInput" class="sr-only">Nama Pengguna TikTok</label>
-        <input type="text" id="usernameInput" placeholder="Masukkan nama pengguna TikTok" />
+  <div id="root"></div>
 
-        <label for="backgroundSelect">Pilih Latar Belakang:</label>
-        <select id="backgroundSelect">
-            <option value="bg/bg0.jpeg">DEFAULT</option>
-            <option value="bg/bg1.jpeg">BG 1</option>
-            <option value="bg/bg2.png">BG 2</option>
-            <option value="bg/bg3.jpg">BG 3</option>
-            <option value="bg/bg4.jpeg">BG 4</option>
-            <option value="bg/bg5.jpg">BG 5</option>
-            <option value="bg/bg6.jpg">BG 6</option>
-            <option value="bg/bg7.jpg">BG 7</option>
-            <option value="bg/bg8.jpg">BG 8</option>
-            <option value="bg/bg9.jpg">BG 9</option>
-            <option value="bg/bg10.jpg">BG 10</option>
-            <option value="bg/bg11.jpg">BG 11</option>
-        </select>
+  <script type="module">
+    import React, { useState, useEffect, useRef } from "https://cdn.skypack.dev/react";
+    import ReactDOM from "https://cdn.skypack.dev/react-dom";
 
-        <div>
-          <input type="checkbox" id="enableBackground" />
-          <label for="enableBackground">Aktifkan Latar Belakang</label>
-        </div>
+    function App() {
+      const [status, setStatus] = useState({ status: 'disconnected', message: '' });
+      const [messages, setMessages] = useState([]);
+      const [backgrounds, setBackgrounds] = useState([]);
+      const [selectedBg, setSelectedBg] = useState(null);
+      const [soundEffects, setSoundEffects] = useState({});
+      const [isLikesSoundOn, setIsLikesSoundOn] = useState(true);
+      const [isFollowsSoundOn, setIsFollowsSoundOn] = useState(true);
+      const [isGiftsSoundOn, setIsGiftsSoundOn] = useState(true);
+      const [volume, setVolume] = useState(0.5);
+      const [floatingPics, setFloatingPics] = useState([]);
 
-        <label for="volumeKomentar">Volume Suara Komentar:</label>
-        <input type="range" id="volumeKomentar" min="0" max="1" step="0.01" value="0.5" />
+      const wsRef = useRef(null);
 
-        <label for="volumeMusik">Volume Musik:</label>
-        <input type="range" id="volumeMusik" min="0" max="1" step="0.01" value="0.5" />
-        
-        <div>
-          <input type="checkbox" id="enableTTS" />
-          <label for="enableTTS">Aktifkan Text-to-Speech (TTS)</label>
-        </div>
+      useEffect(() => {
+        const socket = new WebSocket("ws://localhost:3000");
+        wsRef.current = socket;
 
-        <button id="connectButton">Hubungkan</button>
-        <button id="closeButton">Tutup</button>
-    </div>
+        socket.onopen = () => {
+          setStatus({ status: 'connected', message: 'Terhubung ke server' });
+        };
 
-## 2. Bagian `<script>` yang Diperbaiki
+        socket.onmessage = (event) => {
+          const data = JSON.parse(event.data);
+          if (data.type === 'chat') {
+            setMessages(prev => [...prev, data]);
+            addFloatingPic(data);
+            if (data.subType === 'like') playSoundEffect('like');
+            if (data.subType === 'follow') playSoundEffect('follow');
+            if (data.subType === 'gift') playSoundEffect('gift');
+          } else if (data.type === 'assets') {
+            setBackgrounds(data.backgrounds || []);
+            setSoundEffects(data.sounds || {});
+          }
+        };
 
-Silakan ganti seluruh tag `<script>` Anda dengan kode di bawah ini. Kode ini memperbaiki masalah koneksi `ws`/`wss` dan menambahkan *feedback* tombol tanpa menyentuh *style* HTML/CSS di bagian atas.
+        socket.onclose = () => {
+          setStatus(prev => {
+            if (prev.status === 'connected' || prev.status === 'connecting') {
+              return { status: 'disconnected', message: 'Koneksi terputus. Silakan hubungkan kembali.' };
+            }
+            return prev;
+          });
+        };
 
-```javascript
-    <script>
-        // REVISI 1: Mendeteksi protokol yang aman (wss) jika halaman menggunakan HTTPS
-        const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
-        const ws = new WebSocket(`${protocol}://${window.location.host}`);
-        let isPlaying = false;
-        let currentAudio = null;
-        let backgroundMusic = null;
-        let currentKomentarVolume = 0.5;
-        let currentMusikVolume = 0.5;
-        let isTTSEnabled = false;
+        return () => socket.close();
+      }, []);
 
-        const settingsButton = document.getElementById('settingsButton');
-        const settingsPopup = document.getElementById('settingsPopup');
-        const overlay = document.getElementById('overlay');
-        const closeButton = document.getElementById('closeButton');
-        const connectButton = document.getElementById('connectButton');
-        const usernameInput = document.getElementById('usernameInput');
-        const volumeKomentar = document.getElementById('volumeKomentar');
-        const volumeMusik = document.getElementById('volumeMusik');
-        const enableBackground = document.getElementById('enableBackground');
-        const backgroundSelect = document.getElementById('backgroundSelect');
-        const enableTTS = document.getElementById('enableTTS');
+      const playSoundEffect = (type) => {
+        if (!soundEffects[type]) return;
+        if (type === 'like' && !isLikesSoundOn) return;
+        if (type === 'follow' && !isFollowsSoundOn) return;
+        if (type === 'gift' && !isGiftsSoundOn) return;
 
-        // Fungsi untuk mereset status tombol kembali ke default
-        function resetConnectButton() {
-            connectButton.textContent = 'Hubungkan';
-            connectButton.disabled = false;
-            connectButton.style.backgroundColor = '#007bff';
-        }
+        try {
+          const audio = new Audio(soundEffects[type]);
+          audio.volume = volume;
+          audio.play().catch(e => console.error("Error playing sound:", e));
+        } catch (error) {
+          console.error("Could not play sound effect:", error);
+        }
+      };
 
-        ws.onopen = () => {
-            console.log('WebSocket connection established.');
-            resetConnectButton();
-        };
+      const addFloatingPic = (data) => {
+        if (!data.profilePictureUrl) return;
+        const id = Date.now();
+        const top = Math.random() * 80 + "%";
+        const left = Math.random() * 80 + "%";
+        const animationName = `float-${id}`;
+        const newPic = { id, url: data.profilePictureUrl, top, left, animationName };
 
-        ws.onmessage = (event) => {
-            try {
-                const data = JSON.parse(event.data);
-                console.log('Message from server:', data);
+        const style = document.createElement("style");
+        style.innerHTML = `
+          @keyframes ${animationName} {
+            0% { transform: scale(0) rotate(0deg); opacity: 1; }
+            50% { transform: scale(1.2) rotate(180deg); opacity: 0.8; }
+            100% { transform: scale(0) rotate(360deg); opacity: 0; }
+          }
+        `;
+        document.head.appendChild(style);
 
-                switch (data.type) {
-                    case 'floating-photo':
-                        showFloatingPhoto(data.profilePictureUrl, data.userName);
-                        break;
-                    case 'big-photo':
-                        showBigPhoto(data.profilePictureUrl, data.userName);
-                        break;
-                    case 'play-sound':
-                        playSound(data.sound);
-                        break;
-                    case 'stop-sound':
-                        stopCurrentSound();
-                        break;
-                    case 'play-music':
-                        playBackgroundMusic(data.sound);
-                        break;
-                    case 'tts-greeting':
-                        speak(data.greeting);
-                        break;
-                    case 'chat':
-                        speak(`${data.userName} bilang, ${data.comment}`);
-                        break;
-                    case 'connection-failed':
-                        alert(data.message);
-                        // REVISI 2: Reset status tombol saat gagal koneksi
-                        resetConnectButton();
-                        break;
-                    case 'connection-success':
-                        // REVISI 2: Tunjukkan koneksi sukses
-                        connectButton.textContent = 'TERHUBUNG (Live)';
-                        connectButton.style.backgroundColor = 'green';
-                        connectButton.disabled = false;
-                        settingsPopup.style.display = 'none';
-                        overlay.style.display = 'none';
-                        break;
-                    default:
-                        // Abaikan tipe pesan yang tidak dikenal
-                }
-            } catch (error) {
-                console.error("Failed to parse WebSocket message:", error);
-            }
-        };
+        setFloatingPics(prev => [...prev, newPic]);
+        setTimeout(() => {
+          setFloatingPics(prev => prev.filter(p => p.id !== id));
+          document.head.removeChild(style);
+        }, 60000);
+      };
 
-        ws.onerror = (error) => {
-            console.error('WebSocket Error:', error);
-            alert('Koneksi ke server gagal. Pastikan server berjalan dan coba segarkan halaman.');
-        };
+      return (
+        <div className="relative w-full h-screen overflow-hidden" style={{ backgroundImage: selectedBg ? `url(${selectedBg})` : 'none', backgroundSize: 'cover' }}>
+          {/* Status */}
+          <div className="absolute top-2 left-2 bg-black bg-opacity-60 px-3 py-1 rounded">
+            {status.message || status.status}
+          </div>
 
-        ws.onclose = () => {
-            console.log('WebSocket connection closed.');
-            // REVISI 2: Reset status tombol saat koneksi putus
-            resetConnectButton();
-            alert('Koneksi TikTok terputus.');
-        };
+          {/* Messages */}
+          <div className="absolute bottom-0 w-full max-h-1/3 overflow-y-auto bg-black bg-opacity-40 p-3 space-y-1">
+            {messages.map((msg, idx) => (
+              <div key={idx} className="text-sm flex items-center space-x-2">
+                <img src={msg.profilePictureUrl} alt={`Foto profil ${msg.uniqueId || 'user'}`} className="w-6 h-6 rounded-full"/>
+                <span className="font-bold">{msg.nickname || msg.uniqueId}:</span>
+                <span>{msg.comment || msg.subType}</span>
+              </div>
+            ))}
+          </div>
 
-        function showFloatingPhoto(pictureUrl, userName) {
-            const floatingImage = document.createElement('img');
-            floatingImage.src = pictureUrl;
-            floatingImage.alt = `Foto profil ${userName}`;
-            floatingImage.classList.add('floating-photo');
-            document.body.appendChild(floatingImage);
+          {/* Floating Pictures */}
+          {floatingPics.map(pic => (
+            <img
+              key={pic.id}
+              src={pic.url}
+              alt="Foto profil pengguna"
+              className="w-14 h-14 rounded-full absolute border-2 border-white shadow-lg"
+              style={{
+                top: pic.top,
+                left: pic.left,
+                animation: `${pic.animationName} 60s ease-in-out forwards`
+              }}
+            />
+          ))}
 
-            const animateImage = () => {
-                const viewportWidth = window.innerWidth;
-                const viewportHeight = window.innerHeight;
-                const imageSize = 50;
-                const x = Math.random() * (viewportWidth - imageSize);
-                const y = Math.random() * (viewportHeight - imageSize);
-                floatingImage.style.transform = `translate(${x}px, ${y}px)`;
-            };
-            
-            animateImage(); // Posisi awal
-            const animationInterval = setInterval(animateImage, 5000);
+          {/* Controls */}
+          <div className="absolute top-2 right-2 bg-black bg-opacity-60 p-4 rounded space-y-2">
+            <h2 className="font-bold mb-2">Kontrol</h2>
+            <div className="flex items-center justify-between">
+              <label>Suara Like</label>
+              <input type="checkbox" checked={isLikesSoundOn} onChange={() => setIsLikesSoundOn(v => !v)} />
+            </div>
+            <div className="flex items-center justify-between">
+              <label>Suara Follow</label>
+              <input type="checkbox" checked={isFollowsSoundOn} onChange={() => setIsFollowsSoundOn(v => !v)} />
+            </div>
+            <div className="flex items-center justify-between">
+              <label>Suara Gift</label>
+              <input type="checkbox" checked={isGiftsSoundOn} onChange={() => setIsGiftsSoundOn(v => !v)} />
+            </div>
+            <div>
+              <label>Volume</label>
+              <input type="range" min="0" max="1" step="0.1" value={volume} onChange={(e) => setVolume(parseFloat(e.target.value))}/>
+            </div>
+            <div>
+              <label>Background</label>
+              <select value={selectedBg || ""} onChange={(e) => setSelectedBg(e.target.value)} className="text-black">
+                <option value="">Default</option>
+                {backgrounds.map((bg, idx) => (
+                  <option key={idx} value={bg}>{bg}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
+      );
+    }
 
-            setTimeout(() => {
-                floatingImage.style.opacity = 0;
-                clearInterval(animationInterval);
-                setTimeout(() => {
-                    floatingImage.remove();
-                }, 1000);
-            }, 10000);
-        }
-
-        function showBigPhoto(pictureUrl, userName) {
-            const bigPhotoDiv = document.createElement('div');
-            bigPhotoDiv.classList.add('big-photo');
-            bigPhotoDiv.style.backgroundImage = `url(${pictureUrl})`;
-            bigPhotoDiv.setAttribute('role', 'img');
-            bigPhotoDiv.setAttribute('aria-label', `Foto profil besar dari ${userName}`);
-
-            document.body.appendChild(bigPhotoDiv);
-
-            bigPhotoDiv.style.position = 'fixed';
-            bigPhotoDiv.style.top = '50%';
-            bigPhotoDiv.style.left = '50%';
-            bigPhotoDiv.style.transform = 'translate(-50%, -50%) scale(0.5)';
-            bigPhotoDiv.style.opacity = '0';
-            bigPhotoDiv.style.transition = 'transform 0.5s ease, opacity 0.5s ease';
-            bigPhotoDiv.style.zIndex = '9999';
-
-            setTimeout(() => {
-                bigPhotoDiv.classList.add('show');
-                bigPhotoDiv.style.transform = 'translate(-50%, -50%) scale(1)';
-                bigPhotoDiv.style.opacity = '1';
-            }, 100);
-
-            setTimeout(() => {
-                bigPhotoDiv.style.transform = 'translate(-50%, -50%) scale(0.5)';
-                bigPhotoDiv.style.opacity = '0';
-                setTimeout(() => {
-                    bigPhotoDiv.remove();
-                }, 500);
-            }, 10000);
-        }
-
-        function playSound(soundUrl) {
-            if (isPlaying) return;
-
-            currentAudio = new Audio(soundUrl);
-            currentAudio.volume = currentKomentarVolume;
-            currentAudio.play().catch(e => console.error("Error playing audio:", e));
-            isPlaying = true;
-
-            currentAudio.onended = () => {
-                isPlaying = false;
-                currentAudio = null;
-            };
-        }
-        
-        function stopCurrentSound() {
-            if (isPlaying && currentAudio) {
-                currentAudio.pause();
-                currentAudio.currentTime = 0;
-                currentAudio.onended = null; // Mencegah onended terpicu setelah dihentikan manual
-                currentAudio = null;
-                isPlaying = false;
-            }
-        }
-
-        function playBackgroundMusic(soundUrl) {
-            if (backgroundMusic) {
-                backgroundMusic.pause();
-                backgroundMusic.src = soundUrl;
-            } else {
-                backgroundMusic = new Audio(soundUrl);
-            }
-            backgroundMusic.volume = currentMusikVolume;
-            backgroundMusic.loop = true;
-            backgroundMusic.play().catch(e => console.error("Error playing background music:", e));
-        }
-
-        function speak(text) {
-            if (!isTTSEnabled || !('speechSynthesis' in window)) {
-                return;
-            }
-            
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'id-ID'; // Set language to Indonesian
-            window.speechSynthesis.speak(utterance);
-        }
-
-        settingsButton.addEventListener('click', () => {
-            settingsPopup.style.display = 'block';
-            overlay.style.display = 'block';
-            volumeKomentar.value = currentKomentarVolume;
-            volumeMusik.value = currentMusikVolume;
-            enableTTS.checked = isTTSEnabled;
-        });
-
-        closeButton.addEventListener('click', () => {
-            settingsPopup.style.display = 'none';
-            overlay.style.display = 'none';
-        });
-
-        connectButton.addEventListener('click', () => {
-            const username = usernameInput.value.trim();
-            if (username) {
-                if (ws.readyState === WebSocket.OPEN) {
-                    // Perubahan status tombol saat proses koneksi dimulai
-                    connectButton.textContent = 'Menghubungkan...';
-                    connectButton.disabled = true;
-                    connectButton.style.backgroundColor = 'orange'; // Visualisasi status loading
-
-                    ws.send(JSON.stringify({ type: 'connect', username: username }));
-                } else {
-                    alert('Koneksi WebSocket belum siap. Silakan coba lagi.');
-                }
-            } else {
-                alert('Silakan masukkan nama pengguna.');
-            }
-        });
-
-        volumeKomentar.addEventListener('input', (event) => {
-            currentKomentarVolume = event.target.value;
-            if (currentAudio) {
-                currentAudio.volume = currentKomentarVolume;
-            }
-        });
-
-        volumeMusik.addEventListener('input', (event) => {
-            currentMusikVolume = event.target.value;
-            if (backgroundMusic) {
-                backgroundMusic.volume = currentMusikVolume;
-            }
-        });
-
-        enableTTS.addEventListener('change', (event) => {
-            isTTSEnabled = event.target.checked;
-        });
- 
-        function updateBackground() {
-            if (enableBackground.checked) {
-                const selectedBackground = backgroundSelect.value;
-                document.body.style.backgroundImage = `url('${selectedBackground}')`;
-            } else {
-                document.body.style.backgroundImage = 'none';
-                document.body.style.backgroundColor = '#121212';
-            }
-        }
-
-        enableBackground.addEventListener('change', updateBackground);
-        backgroundSelect.addEventListener('change', updateBackground);
-
-        // Inisialisasi latar belakang saat memuat
-        updateBackground();
-    </script>
+    ReactDOM.render(<App />, document.getElementById("root"));
+  </script>
 </body>
 </html>
