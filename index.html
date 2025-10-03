@@ -119,6 +119,7 @@
             border-radius: 5px;
             cursor: pointer;
             margin-top: 5px;
+            /* Tambahkan transisi di CSS untuk tombol */
             transition: background-color 0.3s ease;
         }
 
@@ -221,8 +222,13 @@
         <button id="closeButton">Tutup</button>
     </div>
 
+## 2. Bagian `<script>` yang Diperbaiki
+
+Silakan ganti seluruh tag `<script>` Anda dengan kode di bawah ini. Kode ini memperbaiki masalah koneksi `ws`/`wss` dan menambahkan *feedback* tombol tanpa menyentuh *style* HTML/CSS di bagian atas.
+
+```javascript
     <script>
-        // REVISI 1: Mendeteksi protokol (http -> ws, https -> wss)
+        // REVISI 1: Mendeteksi protokol yang aman (wss) jika halaman menggunakan HTTPS
         const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
         const ws = new WebSocket(`${protocol}://${window.location.host}`);
         let isPlaying = false;
@@ -244,12 +250,16 @@
         const backgroundSelect = document.getElementById('backgroundSelect');
         const enableTTS = document.getElementById('enableTTS');
 
-        ws.onopen = () => {
-            console.log('WebSocket connection established.');
-            // Opsional: Reset tombol jika sudah terhubung saat refresh
+        // Fungsi untuk mereset status tombol kembali ke default
+        function resetConnectButton() {
             connectButton.textContent = 'Hubungkan';
             connectButton.disabled = false;
             connectButton.style.backgroundColor = '#007bff';
+        }
+
+        ws.onopen = () => {
+            console.log('WebSocket connection established.');
+            resetConnectButton();
         };
 
         ws.onmessage = (event) => {
@@ -282,15 +292,13 @@
                     case 'connection-failed':
                         alert(data.message);
                         // REVISI 2: Reset status tombol saat gagal koneksi
-                        connectButton.textContent = 'Hubungkan';
-                        connectButton.disabled = false;
-                        connectButton.style.backgroundColor = '#007bff';
+                        resetConnectButton();
                         break;
                     case 'connection-success':
                         // REVISI 2: Tunjukkan koneksi sukses
                         connectButton.textContent = 'TERHUBUNG (Live)';
                         connectButton.style.backgroundColor = 'green';
-                        connectButton.disabled = false; // Boleh diklik lagi untuk diskon
+                        connectButton.disabled = false;
                         settingsPopup.style.display = 'none';
                         overlay.style.display = 'none';
                         break;
@@ -310,9 +318,7 @@
         ws.onclose = () => {
             console.log('WebSocket connection closed.');
             // REVISI 2: Reset status tombol saat koneksi putus
-            connectButton.textContent = 'Hubungkan';
-            connectButton.disabled = false;
-            connectButton.style.backgroundColor = '#007bff';
+            resetConnectButton();
             alert('Koneksi TikTok terputus.');
         };
 
@@ -439,15 +445,12 @@
             const username = usernameInput.value.trim();
             if (username) {
                 if (ws.readyState === WebSocket.OPEN) {
-                    // REVISI 2: Perubahan status tombol saat proses koneksi dimulai
+                    // Perubahan status tombol saat proses koneksi dimulai
                     connectButton.textContent = 'Menghubungkan...';
                     connectButton.disabled = true;
-                    connectButton.style.backgroundColor = 'orange';
+                    connectButton.style.backgroundColor = 'orange'; // Visualisasi status loading
 
                     ws.send(JSON.stringify({ type: 'connect', username: username }));
-                    // Biarkan popup tetap terbuka sebentar atau tutup di respon 'connection-success'
-                    // Disarankan tutup di respon sukses dari server (sudah ditambahkan case 'connection-success')
-
                 } else {
                     alert('Koneksi WebSocket belum siap. Silakan coba lagi.');
                 }
