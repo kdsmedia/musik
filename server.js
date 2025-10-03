@@ -1,37 +1,30 @@
+// Mengimpor modul yang diperlukan
 const express = require('express');
 const http = require('http');
 const WebSocket = require('ws');
 const { WebcastPushConnection } = require('tiktok-live-connector');
 const path = require('path');
+const fs = require('fs');
 
-// Buat aplikasi Express dan server HTTP
+// Membuat aplikasi Express
 const app = express();
+const port = 3000;
+
+// Membuat server HTTP dari aplikasi Express
 const server = http.createServer(app);
+
+// Membuat server WebSocket yang terhubung ke server HTTP
 const wss = new WebSocket.Server({ server });
 
-// Sajikan file statis (bg, sounds, dll)
-app.use(express.static(__dirname));
+// --- Variabel Global untuk State Aplikasi ---
+let tiktokConnection = null;
 
-// Sajikan index.html untuk route utama
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
-});
+// --- Fungsi Helper ---
 
-// --- DAFTAR SAPAAN ACAK ---
-const greetings = [
-    'halo {username} yang baik hati',
-    'halo {username} yang jarang mandi',
-    'halo {username} yang suka jajan sembarangan',
-    'halo {username} yang sedang di kejar pinjol',
-    'halo {username} yang suka pake sendal sisirangan',
-    'halo {username} yang di sayangi kedua orang tua',
-    'halo {username} yang manja'
-];
-
-// --- KONEKSI TIKTOK GLOBAL ---
-let tiktokLiveConnection = null;
-
-// --- FUNGSI BROADCAST ---
+/**
+ * Mengirim pesan ke semua klien WebSocket yang terhubung.
+ * @param {object} data Objek data yang akan dikirim.
+ */
 function broadcast(data) {
     wss.clients.forEach(client => {
         if (client.readyState === WebSocket.OPEN) {
@@ -40,144 +33,200 @@ function broadcast(data) {
     });
 }
 
-// --- HANDLER EVENT TIKTOK ---
-function displayFloatingPhoto(profilePictureUrl, userName) {
-    broadcast({ type: 'floating-photo', profilePictureUrl, userName });
-}
 
-function showBigPhoto(profilePictureUrl, userName) {
-    broadcast({ type: 'big-photo', profilePictureUrl, userName });
-}
+// --- Pengaturan Server ---
 
-function playSound(soundPath) {
-    broadcast({ type: 'play-sound', sound: soundPath });
-}
+// Endpoint API HARUS didefinisikan SEBELUM penyajian file statis.
+// Ini memastikan permintaan API tidak dicegat oleh middleware static.
 
-function stopPlayingSound() {
-    broadcast({ type: 'stop-sound' });
-}
-
-function handleMemberJoin(data) {
-    console.log(`${data.uniqueId} bergabung dalam stream!`);
-    displayFloatingPhoto(data.profilePictureUrl, data.uniqueId);
-
-    const randomGreeting = greetings[Math.floor(Math.random() * greetings.length)];
-    const finalGreeting = randomGreeting.replace('{username}', data.uniqueId);
-
-    broadcast({ type: 'tts-greeting', greeting: finalGreeting });
-}
-
-function handleGift(data) {
-    if (data.giftType !== 1 || data.repeatEnd) {
-        console.log(`${data.uniqueId} mengirim hadiah ${data.giftName} x${data.repeatCount}`);
-        showBigPhoto(data.profilePictureUrl, data.uniqueId);
-    }
-}
-
-function handleLike(data) {
-    console.log(`${data.uniqueId} mengirim ${data.likeCount} suka`);
-    for (let i = 0; i < data.likeCount; i++) {
-        setTimeout(() => displayFloatingPhoto(data.profilePictureUrl, data.uniqueId), i * 200);
-    }
-}
-
-function handleShare(data) {
-    console.log(`${data.uniqueId} membagikan stream!`);
-    displayFloatingPhoto(data.profilePictureUrl, data.uniqueId);
-}
-
-function handleChat(data) {
-    console.log(`${data.uniqueId} (userId:${data.userId}) menulis: ${data.comment}`);
-    broadcast({ type: 'chat', userName: data.uniqueId, comment: data.comment });
-
-    const soundMapping = {
-        'king': 'sounds/stop.mp3', 'fyp': 'sounds/telolet.mp3',
-        '1': 'sounds/1.mp3', '2': 'sounds/2.mp3', '3': 'sounds/3.mp3', '4': 'sounds/4.mp3', '5': 'sounds/5.mp3',
-        '6': 'sounds/6.mp3', '7': 'sounds/7.mp3', '8': 'sounds/8.mp3', '9': 'sounds/9.mp3', '10': 'sounds/10.mp3',
-        '11': 'sounds/11.mp3', '12': 'sounds/12.mp3', '13': 'sounds/13.mp3', '14': 'sounds/14.mp3', '15': 'sounds/15.mp3',
-        '16': 'sounds/16.mp3', '17': 'sounds/17.mp3', '18': 'sounds/18.mp3', '19': 'sounds/19.mp3', '20': 'sounds/20.mp3',
-        '21': 'sounds/21.mp3', '22': 'sounds/22.mp3', '23': 'sounds/23.mp3', '24': 'sounds/24.mp3', '25': 'sounds/25.mp3',
-        '26': 'sounds/26.mp3', '27': 'sounds/27.mp3', '28': 'sounds/28.mp3', '29': 'sounds/29.mp3', '30': 'sounds/30.mp3',
-        '31': 'sounds/31.mp3', '32': 'sounds/32.mp3', '33': 'sounds/33.mp3', '34': 'sounds/34.mp3', '35': 'sounds/35.mp3',
-        '36': 'sounds/36.mp3', '37': 'sounds/37.mp3', '38': 'sounds/38.mp3', '39': 'sounds/39.mp3', '40': 'sounds/40.mp3',
-        '41': 'sounds/41.mp3', '42': 'sounds/42.mp3', '43': 'sounds/43.mp3', '44': 'sounds/44.mp3', '45': 'sounds/45.mp3',
-        '46': 'sounds/46.mp3', '47': 'sounds/47.mp3', '48': 'sounds/48.mp3', '49': 'sounds/49.mp3', '50': 'sounds/50.mp3',
-        '51': 'sounds/51.mp3', '52': 'sounds/52.mp3', '53': 'sounds/53.mp3', '54': 'sounds/54.mp3', '55': 'sounds/55.mp3',
-        '56': 'sounds/56.mp3', '57': 'sounds/57.mp3', '58': 'sounds/58.mp3', '59': 'sounds/59.mp3', '60': 'sounds/60.mp3',
-        '61': 'sounds/61.mp3', '62': 'sounds/62.mp3', '63': 'sounds/63.mp3', '64': 'sounds/64.mp3', '65': 'sounds/65.mp3',
-        '66': 'sounds/66.mp3', '67': 'sounds/67.mp3', '68': 'sounds/68.mp3', '69': 'sounds/69.mp3', '70': 'sounds/70.mp3',
-        '71': 'sounds/71.mp3', '72': 'sounds/72.mp3', '73': 'sounds/73.mp3', '74': 'sounds/74.mp3', '75': 'sounds/75.mp3',
-        '76': 'sounds/76.mp3', '77': 'sounds/77.mp3', '78': 'sounds/78.mp3', '79': 'sounds/79.mp3', '80': 'sounds/80.mp3',
-        '81': 'sounds/81.mp3', '82': 'sounds/82.mp3', '83': 'sounds/83.mp3', '84': 'sounds/84.mp3', '85': 'sounds/85.mp3',
-        '86': 'sounds/86.mp3', '87': 'sounds/87.mp3', '88': 'sounds/88.mp3', '89': 'sounds/89.mp3', '90': 'sounds/90.mp3',
-        '91': 'sounds/91.mp3', '92': 'sounds/92.mp3', '93': 'sounds/93.mp3', '94': 'sounds/94.mp3', '95': 'sounds/95.mp3',
-        '96': 'sounds/96.mp3', '97': 'sounds/97.mp3', '98': 'sounds/98.mp3', '99': 'sounds/99.mp3', '100': 'sounds/100.mp3'
-    };
-
-    const comment = data.comment.trim().toLowerCase();
-    const soundFile = soundMapping[comment];
-
-    if (soundFile) playSound(soundFile);
-    if (comment === 'ganti') stopPlayingSound();
-}
-
-// --- SETUP LISTENER TIKTOK ---
-function setupTikTokListeners() {
-    if (!tiktokLiveConnection) return;
-    tiktokLiveConnection.removeAllListeners();
-
-    tiktokLiveConnection.on('connected', state => console.log('Terhubung ke stream!', state));
-    tiktokLiveConnection.on('disconnected', () => console.log('Koneksi terputus.'));
-    tiktokLiveConnection.on('streamEnd', actionId => console.log('Stream berakhir dengan actionId:', actionId));
-
-    tiktokLiveConnection.on('member', handleMemberJoin);
-    tiktokLiveConnection.on('gift', handleGift);
-    tiktokLiveConnection.on('like', handleLike);
-    tiktokLiveConnection.on('share', handleShare);
-    tiktokLiveConnection.on('chat', handleChat);
-}
-
-// --- WEBSOCKET SERVER ---
-wss.on('connection', (ws) => {
-    console.log('Klien baru terhubung.');
-
-    ws.on('message', (message) => {
-        let data;
-        try {
-            data = JSON.parse(message);
-        } catch (e) {
-            console.error('Gagal parsing pesan:', message);
-            return;
-        }
-
-        if (data.type === 'connect' && data.username) {
-            const username = data.username;
-            console.log(`Menerima permintaan koneksi untuk pengguna: ${username}`);
-
-            if (tiktokLiveConnection && tiktokLiveConnection.connected) {
-                console.log('Memutuskan koneksi dari stream sebelumnya...');
-                tiktokLiveConnection.disconnect();
+// Endpoint API untuk mendapatkan daftar lagu dari folder mp3
+app.get('/api/playlist', (req, res) => {
+    const mp3Directory = path.join(__dirname, 'mp3');
+    fs.readdir(mp3Directory, (err, files) => {
+        if (err) {
+            console.error('Gagal membaca direktori mp3:', err);
+            // Jika direktori tidak ada, kirim array kosong agar frontend tidak error
+            if (err.code === 'ENOENT') {
+                return res.json([]);
             }
-
-            console.log(`Mencoba terhubung ke @${username}...`);
-            // REVISI KRUSIAL: Menghapus signServerUrl
-            tiktokLiveConnection = new WebcastPushConnection(username); 
-
-            setupTikTokListeners();
-
-            tiktokLiveConnection.connect().catch(err => {
-                console.error(`Gagal terhubung ke @${username}:`, err);
-                broadcast({ type: 'connection-failed', message: `Gagal terhubung ke @${username}. Pastikan nama benar & sedang live.` });
-            });
+            return res.status(500).json({ error: 'Gagal memuat playlist.' });
         }
-    });
 
-    ws.on('close', () => console.log('Klien terputus.'));
-    ws.on('error', (err) => console.error('Error WebSocket:', err));
+        const songFiles = files
+            .filter(file => file.endsWith('.mp3'))
+            .map(file => {
+                const songId = parseInt(path.basename(file, '.mp3'), 10);
+                if (!isNaN(songId)) {
+                    return {
+                        id: songId,
+                        title: `Lagu #${songId}`, // Judul generik
+                        artist: 'Playlist Server',   // Artis generik
+                        url: `/mp3/${file}`      // Path URL untuk klien
+                    };
+                }
+                return null;
+            })
+            .filter(Boolean) // Hapus entri null jika ada file mp3 tanpa nama angka
+            .sort((a, b) => a.id - b.id); // Urutkan berdasarkan ID lagu
+
+        res.json(songFiles);
+    });
 });
 
-// --- JALANKAN SERVER ---
-const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
-    console.log(`Server berjalan di port ${PORT}`);
+// Endpoint API untuk mendapatkan daftar latar belakang dari folder bg
+app.get('/api/backgrounds', (req, res) => {
+    const bgDirectory = path.join(__dirname, 'bg');
+    fs.readdir(bgDirectory, (err, files) => {
+        if (err) {
+            console.error('Gagal membaca direktori bg:', err);
+             // Jika direktori tidak ada, kirim array kosong
+            if (err.code === 'ENOENT') {
+                return res.json([]);
+            }
+            return res.status(500).json({ error: 'Gagal memuat daftar latar belakang.' });
+        }
+        
+        // Filter hanya untuk file gambar
+        const imageFiles = files.filter(file => /\.(jpg|jpeg|png|gif)$/i.test(file));
+        res.json(imageFiles);
+    });
+});
+
+// Menyajikan file statis dari direktori root (misalnya, index.html dan folder mp3, bg)
+app.use(express.static(__dirname));
+
+
+// Menangani koneksi WebSocket
+wss.on('connection', ws => {
+  console.log('Koneksi WebSocket baru');
+
+  ws.on('message', message => {
+    // Pesan dari klien diharapkan berupa JSON
+    try {
+      const data = JSON.parse(message);
+      if (data.type === 'connect' && data.username) {
+        // Hentikan koneksi TikTok yang sudah ada jika ada
+        if (tiktokConnection) {
+          tiktokConnection.disconnect();
+          tiktokConnection = null;
+        }
+
+        // Buat koneksi baru ke TikTok Live
+        tiktokConnection = new WebcastPushConnection(data.username);
+        
+        // Menangani kesalahan dari koneksi TikTok untuk mencegah server crash.
+        // Ini penting karena TikTok dapat mengubah API mereka, yang dapat menyebabkan
+        // library 'tiktok-live-connector' gagal mem-parsing data dan melempar error.
+        tiktokConnection.on('error', err => {
+            console.error('Terjadi kesalahan di tiktok-live-connector:', err);
+            broadcast({
+                type: 'tiktokError',
+                message: 'Terjadi kesalahan saat memproses data dari TikTok. Beberapa interaksi mungkin tidak tampil.'
+            });
+        });
+
+        // Tambahkan event listener untuk berbagai acara TikTok Live
+        tiktokConnection.on('chat', data => {
+          console.log(`${data.uniqueId} berkomentar: ${data.comment}`);
+          
+          // Kirim data komentar ke semua klien
+          broadcast({
+            type: 'chat',
+            uniqueId: data.uniqueId,
+            comment: data.comment,
+            profilePictureUrl: data.profilePictureUrl
+          });
+        });
+
+        tiktokConnection.on('gift', data => {
+          console.log(`${data.uniqueId} memberikan ${data.giftName}`);
+          broadcast({
+            type: 'gift',
+            uniqueId: data.uniqueId,
+            giftName: data.giftName,
+            repeatCount: data.repeatCount,
+            giftPictureUrl: data.giftPictureUrl
+          });
+        });
+
+        tiktokConnection.on('like', data => {
+          console.log(`${data.uniqueId} menyukai live`);
+          broadcast({
+            type: 'like',
+            uniqueId: data.uniqueId,
+            likeCount: data.likeCount,
+            profilePictureUrl: data.profilePictureUrl
+          });
+        });
+
+        tiktokConnection.on('follow', data => {
+          console.log(`${data.uniqueId} is now following!`);
+          broadcast({
+            type: 'follow',
+            uniqueId: data.uniqueId,
+            profilePictureUrl: data.profilePictureUrl
+          });
+        });
+
+        tiktokConnection.on('envelope', data => {
+          console.log('Envelope event received:', data);
+          broadcast({
+            type: 'envelope',
+            data: data
+          });
+        });
+        
+        tiktokConnection.on('streamEnd', () => {
+          console.log('Stream TikTok telah berakhir.');
+          broadcast({ type: 'streamEnd' });
+          if(tiktokConnection) {
+            tiktokConnection.disconnect();
+            tiktokConnection = null;
+          }
+        });
+
+        tiktokConnection.connect().then(state => {
+          console.log(`Berhasil terhubung ke live TikTok ${state.roomInfo.uniqueId}`);
+          ws.send(JSON.stringify({
+            type: 'connectionStatus',
+            status: 'success',
+            message: `Berhasil terhubung ke: ${data.username}`
+          }));
+        }).catch(err => {
+          console.error('Gagal terhubung ke live TikTok:', err);
+          ws.send(JSON.stringify({
+            type: 'connectionStatus',
+            status: 'error',
+            message: 'Gagal terhubung. Pastikan nama pengguna benar dan sedang live.'
+          }));
+        });
+
+      } else {
+        // Menangani tipe pesan yang tidak dikenal
+        console.error(`Menerima tipe pesan yang tidak dikenal: ${data.type}`);
+        ws.send(JSON.stringify({
+          type: 'error',
+          message: `Tipe pesan tidak dikenal: '${data.type}'.`
+        }));
+      }
+    } catch (e) {
+      console.error('Gagal mengurai pesan WebSocket:', e);
+    }
+  });
+
+  ws.on('close', () => {
+    console.log('Koneksi WebSocket terputus');
+    // Jika tidak ada klien lain yang terhubung, putuskan koneksi TikTok
+    if (wss.clients.size === 0 && tiktokConnection) {
+        console.log('Klien terakhir terputus. Menghentikan koneksi TikTok...');
+        tiktokConnection.disconnect();
+        tiktokConnection = null;
+    }
+  });
+});
+
+// Memulai server dan mendengarkan permintaan
+server.listen(port, () => {
+  console.log(`Server berjalan di http://localhost:${port}`);
+  console.log('Buka URL di browser untuk melihat halaman.');
 });
