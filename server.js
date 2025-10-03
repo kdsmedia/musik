@@ -234,8 +234,8 @@ wss.on('connection', (ws) => {
     ws.on('error', (err) => console.error('Error WebSocket:', err));
 });
 
-// Mulai server pada port 3000 dan dengarkan di semua antarmuka jaringan
+// Mulai server pada port 3000 dan dengarkan HANYA di localhost
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, '0.0.0.0', () => {
+server.listen(PORT, '127.0.0.1', () => {
     console.log(`Server berjalan di http://localhost:${PORT}`);
 });
