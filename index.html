@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -14,13 +13,12 @@
             --input-bg: #2a2a3a;
             --border-color: #4a4a5a;
         }
-
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             overflow: hidden;
-            background-image: url('bg/bg0.jpeg'); /* Default background image */
+            background-image: url('bg/bg0.jpeg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -29,279 +27,42 @@
             width: 100vw;
             color: #333;
         }
-
-        .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: nowrap;
-            border-width: 0;
-        }
-
-        @media (max-width: 768px) {
-            body {
-                background-attachment: scroll;
-            }
-        }
-
-        #settingsButton {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: transparent;
-            color: #fff;
-            text-shadow: 0 0 5px black;
-            border: none;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            font-size: 24px;
-            text-align: center;
-            line-height: 50px;
-            cursor: pointer;
-            z-index: 9000;
-            transition: transform 0.3s ease-in-out;
-        }
-
-        #settingsButton:hover {
-            transform: rotate(90deg);
-        }
-
-        #settingsPopup {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: var(--background-dark);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--primary-color);
-            color: var(--text-light);
-            padding: 20px;
-            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5);
-            z-index: 10000;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 340px;
-        }
-
-        #settingsPopup h2, #settingsPopup h3 {
-            margin-top: 0;
-            margin-bottom: 1.5rem;
-            color: var(--primary-color);
-            text-align: center;
-        }
-
-        #settingsPopup .setting-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 1rem;
-        }
-
-        #settingsPopup label {
-            margin-bottom: 0;
-        }
-
-        #settingsPopup input[type="text"], 
-        #settingsPopup select {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 1rem;
-            box-sizing: border-box;
-            background-color: var(--input-bg);
-            color: var(--text-light);
-            border: 1px solid var(--border-color);
-            border-radius: 5px;
-            transition: border-color 0.3s;
-        }
-
-        #settingsPopup input[type="text"]:focus, 
-        #settingsPopup select:focus {
-            outline: none;
-            border-color: var(--primary-color);
-        }
-
-        #settingsPopup input[type="range"] {
-            width: 60%;
-        }
-
-        #settingsPopup button {
-            width: 100%;
-            padding: 12px;
-            background-color: var(--primary-color);
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 5px;
-            transition: background-color 0.3s, opacity 0.3s;
-            font-size: 1rem;
-        }
-        
-        #settingsPopup button:disabled {
-            background-color: #5a6268;
-            cursor: not-allowed;
-            opacity: 0.7;
-        }
-
-        #settingsPopup button:hover:not(:disabled) {
-            background-color: var(--primary-hover-color);
-        }
-
-        #settingsPopup #closeButton {
-            background-color: #6c757d;
-        }
-
-        #settingsPopup #closeButton:hover {
-            background-color: #5a6268;
-        }
-        
-        #settingsPopup h3 {
-            margin-top: 1.5rem;
-            margin-bottom: 1rem;
-            border-top: 1px solid var(--border-color);
-            padding-top: 1rem;
-        }
-
-        #overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            z-index: 9999;
-        }
-
-        /* Toggle Switch styles */
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 50px;
-            height: 24px;
-        }
-
-        .switch input { 
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-            border-radius: 24px;
-        }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 18px;
-            width: 18px;
-            left: 3px;
-            bottom: 3px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-
-        input:checked + .slider {
-            background-color: var(--primary-color);
-        }
-
-        input:checked + .slider:before {
-            transform: translateX(26px);
-        }
-
-        .floating-photo {
-            position: absolute;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background-size: cover;
-            background-position: center;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-            pointer-events: none;
-            z-index: 1000;
-            transition: transform 5s ease-in-out, opacity 1s;
-            border: 5px solid limegreen;
-            box-shadow: 0 0 10px limegreen;
-        }
-
-        .big-photo {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            width: 300px;
-            height: 300px;
-            border-radius: 50%;
-            background-size: cover;
-            background-position: center;
-            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5);
-            pointer-events: none;
-            z-index: 9999;
-            /* Initial state for transition */
-            transform: translate(-50%, -50%) scale(0.5);
-            opacity: 0;
-            visibility: hidden;
-            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease-out, visibility 0.4s;
-        }
-
-        .big-photo.show {
-            /* Visible state */
-            transform: translate(-50%, -50%) scale(1);
-            opacity: 1;
-            visibility: visible;
-        }
-
-        /* Animasi Hati Terbang untuk Like */
-        @keyframes flyUp {
-            0% {
-                transform: translateY(0) scale(1);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-80vh) scale(0.5);
-                opacity: 0;
-            }
-        }
-
-        .flying-heart {
-            position: fixed;
-            bottom: 20px; /* Mulai dari bawah */
-            font-size: 2rem; /* Ukuran emoji hati */
-            color: red;
-            pointer-events: none;
-            z-index: 9998; /* Di bawah popup pengaturan */
-            animation: flyUp 4s ease-out forwards;
-            text-shadow: 0 0 5px rgba(255, 255, 255, 0.7);
-        }
+        .sr-only {position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border-width:0;}
+        @media (max-width: 768px){body{background-attachment:scroll;}}
+        #settingsButton{position:fixed;bottom:20px;right:20px;background-color:transparent;color:#fff;text-shadow:0 0 5px black;border:none;border-radius:50%;width:50px;height:50px;font-size:24px;text-align:center;line-height:50px;cursor:pointer;z-index:9000;transition:transform .3s ease-in-out;}
+        #settingsButton:hover{transform:rotate(90deg);}
+        #settingsPopup{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background-color:var(--background-dark);backdrop-filter:blur(10px);border:1px solid var(--primary-color);color:var(--text-light);padding:20px;box-shadow:0 0 15px rgba(0,0,0,.5);z-index:10000;border-radius:12px;width:90%;max-width:340px;}
+        #settingsPopup h2,#settingsPopup h3{margin-top:0;margin-bottom:1.5rem;color:var(--primary-color);text-align:center;}
+        #settingsPopup .setting-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;}
+        #settingsPopup input[type="text"],#settingsPopup select{width:100%;padding:10px;margin-bottom:1rem;box-sizing:border-box;background-color:var(--input-bg);color:var(--text-light);border:1px solid var(--border-color);border-radius:5px;transition:border-color .3s;}
+        #settingsPopup input[type="text"]:focus,#settingsPopup select:focus{outline:none;border-color:var(--primary-color);}
+        #settingsPopup input[type="range"]{width:60%;}
+        #settingsPopup button{width:100%;padding:12px;background-color:var(--primary-color);color:#fff;border:none;border-radius:5px;cursor:pointer;margin-top:5px;transition:background-color .3s,opacity .3s;font-size:1rem;}
+        #settingsPopup button:disabled{background-color:#5a6268;cursor:not-allowed;opacity:.7;}
+        #settingsPopup button:hover:not(:disabled){background-color:var(--primary-hover-color);}
+        #settingsPopup #closeButton{background-color:#6c757d;}
+        #settingsPopup #closeButton:hover{background-color:#5a6268;}
+        #settingsPopup h3{margin-top:1.5rem;margin-bottom:1rem;border-top:1px solid var(--border-color);padding-top:1rem;}
+        #overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background-color:rgba(0,0,0,.7);z-index:9999;}
+        .switch{position:relative;display:inline-block;width:50px;height:24px;}
+        .switch input{opacity:0;width:0;height:0;}
+        .slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background-color:#ccc;transition:.4s;border-radius:24px;}
+        .slider:before{position:absolute;content:"";height:18px;width:18px;left:3px;bottom:3px;background-color:white;transition:.4s;border-radius:50%;}
+        input:checked + .slider{background-color:var(--primary-color);}
+        input:checked + .slider:before{transform:translateX(26px);}
+        .floating-photo{position:absolute;width:50px;height:50px;border-radius:50%;background-size:cover;background-position:center;box-shadow:0 0 10px rgba(0,0,0,.5);pointer-events:none;z-index:1000;transition:transform 5s ease-in-out,opacity 1s;border:5px solid limegreen;box-shadow:0 0 10px limegreen;}
+        .big-photo{position:fixed;top:50%;left:50%;width:300px;height:300px;border-radius:50%;background-size:cover;background-position:center;box-shadow:0 0 15px rgba(0,0,0,.5);pointer-events:none;z-index:9999;transform:translate(-50%,-50%) scale(.5);opacity:0;visibility:hidden;transition:transform .4s cubic-bezier(.34,1.56,.64,1),opacity .4s ease-out,visibility .4s;}
+        .big-photo.show{transform:translate(-50%,-50%) scale(1);opacity:1;visibility:visible;}
+        @keyframes flyUp{0%{transform:translateY(0) scale(1);opacity:1;}100%{transform:translateY(-80vh) scale(.5);opacity:0;}}
+        .flying-heart{position:fixed;bottom:20px;font-size:2rem;color:red;pointer-events:none;z-index:9998;animation:flyUp 4s ease-out forwards;text-shadow:0 0 5px rgba(255,255,255,.7);}
     </style>
 </head>
 <body>
-    <!-- Settings Button -->
     <button id="settingsButton" aria-label="Buka Pengaturan">&#9881;</button>
-
-    <!-- Settings Popup -->
     <div id="overlay"></div>
     <div id="settingsPopup" role="dialog" aria-labelledby="settingsTitle" aria-modal="true">
         <h2 id="settingsTitle">Pengaturan</h2>
-        <label for="usernameInput" class="sr-only">Nama Pengguna TikTok</label>
         <input type="text" id="usernameInput" placeholder="Masukkan nama pengguna TikTok" />
-
-        <label for="backgroundSelect" class="sr-only">Pilih Latar Belakang</label>
         <select id="backgroundSelect">
             <option value="bg/bg0.jpeg">DEFAULT</option>
             <option value="bg/bg1.jpeg">BG 1</option>
@@ -316,33 +77,22 @@
             <option value="bg/bg10.jpg">BG 10</option>
             <option value="bg/bg11.jpg">BG 11</option>
         </select>
-
         <div class="setting-row">
           <label for="enableBackground">Aktifkan Latar Belakang</label>
-          <label class="switch">
-            <input type="checkbox" id="enableBackground" checked/>
-            <span class="slider"></span>
-          </label>
+          <label class="switch"><input type="checkbox" id="enableBackground" checked/><span class="slider"></span></label>
         </div>
-
         <div class="setting-row">
             <label for="volumeKomentar">Volume Suara Komentar</label>
             <input type="range" id="volumeKomentar" min="0" max="1" step="0.01" value="0.5" />
         </div>
-        
         <div class="setting-row">
             <label for="volumeMusik">Volume Musik</label>
             <input type="range" id="volumeMusik" min="0" max="1" step="0.01" value="0.5" />
         </div>
-        
         <div class="setting-row">
           <label for="enableTTS">Aktifkan Text-to-Speech (TTS)</label>
-          <label class="switch">
-            <input type="checkbox" id="enableTTS" />
-            <span class="slider"></span>
-          </label>
+          <label class="switch"><input type="checkbox" id="enableTTS" /><span class="slider"></span></label>
         </div>
-
         <button id="connectButton">Hubungkan</button>
         <button id="closeButton">Tutup</button>
     </div>
@@ -387,9 +137,11 @@
             ws.onmessage = (event) => {
                 try {
                     const data = JSON.parse(event.data);
-                    console.log('Message from server:', data);
-
                     switch (data.type) {
+                        case 'connected':
+                            connectButton.textContent = `Terhubung ✅ (${data.username})`;
+                            connectButton.disabled = true;
+                            break;
                         case 'floating-photo':
                             showFloatingPhoto(data.profilePictureUrl, data.userName);
                             break;
@@ -416,9 +168,9 @@
                             break;
                         case 'connection-failed':
                             alert(data.message);
+                            connectButton.textContent = 'Hubungkan';
+                            connectButton.disabled = false;
                             break;
-                        default:
-                            // Ignore unknown message types
                     }
                 } catch (error) {
                     console.error("Failed to parse WebSocket message:", error);
@@ -427,15 +179,12 @@
 
             ws.onerror = (error) => {
                 console.error('WebSocket Error:', error);
-                // The onclose event will handle the UI update and reconnection attempt.
             };
 
             ws.onclose = () => {
-                console.log('WebSocket connection closed. Attempting to reconnect in 3 seconds...');
-                connectButton.textContent = 'Terputus. Menyambung ulang...';
-                connectButton.disabled = true;
-                
-                // Automatically try to reconnect after a delay
+                console.log('WebSocket connection closed. Attempting to reconnect...');
+                connectButton.textContent = 'Hubungkan';
+                connectButton.disabled = false;
                 setTimeout(initializeWebSocket, 3000);
             };
         }
@@ -446,7 +195,6 @@
             floatingImage.alt = `Foto profil ${userName}`;
             floatingImage.classList.add('floating-photo');
             document.body.appendChild(floatingImage);
-
             const animateImage = () => {
                 const viewportWidth = window.innerWidth;
                 const viewportHeight = window.innerHeight;
@@ -455,16 +203,12 @@
                 const y = Math.random() * (viewportHeight - imageSize);
                 floatingImage.style.transform = `translate(${x}px, ${y}px)`;
             };
-            
-            animateImage(); // Initial position
+            animateImage();
             const animationInterval = setInterval(animateImage, 5000);
-
             setTimeout(() => {
                 floatingImage.style.opacity = '0';
                 clearInterval(animationInterval);
-                setTimeout(() => {
-                    floatingImage.remove();
-                }, 1000);
+                setTimeout(() => floatingImage.remove(), 1000);
             }, 10000);
         }
 
@@ -475,16 +219,10 @@
             bigPhotoDiv.setAttribute('role', 'img');
             bigPhotoDiv.setAttribute('aria-label', `Foto profil besar dari ${userName}`);
             document.body.appendChild(bigPhotoDiv);
-
-            setTimeout(() => {
-                bigPhotoDiv.classList.add('show');
-            }, 100);
-
+            setTimeout(() => bigPhotoDiv.classList.add('show'), 100);
             setTimeout(() => {
                 bigPhotoDiv.classList.remove('show');
-                setTimeout(() => {
-                    bigPhotoDiv.remove();
-                }, 500);
+                setTimeout(() => bigPhotoDiv.remove(), 500);
             }, 10000);
         }
 
@@ -493,32 +231,22 @@
             heart.classList.add('flying-heart');
             heart.innerHTML = '❤️';
             document.body.appendChild(heart);
-
             const duration = Math.random() * 2 + 3;
             const size = Math.random() * 1.5 + 1;
             const startX = Math.random() * (window.innerWidth - 40);
-
             heart.style.left = `${startX}px`;
             heart.style.fontSize = `${size}rem`;
             heart.style.animationDuration = `${duration}s`;
-
-            setTimeout(() => {
-                heart.remove();
-            }, duration * 1000);
+            setTimeout(() => heart.remove(), duration * 1000);
         }
 
         function playSound(soundUrl) {
             if (isPlaying) return;
-
             currentAudio = new Audio(soundUrl);
             currentAudio.volume = currentKomentarVolume;
             currentAudio.play().catch(e => console.error("Error playing audio:", e));
             isPlaying = true;
-
-            currentAudio.onended = () => {
-                isPlaying = false;
-                currentAudio = null;
-            };
+            currentAudio.onended = () => {isPlaying = false;currentAudio = null;};
         }
 
         function stopCurrentSound() {
@@ -544,17 +272,13 @@
         }
 
         function speak(text) {
-            if (!isTTSEnabled || !('speechSynthesis' in window)) {
-                return;
-            }
-            
+            if (!isTTSEnabled || !('speechSynthesis' in window)) return;
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = 'id-ID';
             window.speechSynthesis.speak(utterance);
         }
 
         function openSettings() {
-            if (!settingsPopup || !overlay || !volumeKomentar || !volumeMusik || !enableTTS) return;
             settingsPopup.style.display = 'block';
             overlay.style.display = 'block';
             volumeKomentar.value = currentKomentarVolume;
@@ -563,23 +287,17 @@
         }
 
         function closeSettings() {
-            if (!settingsPopup || !overlay) return;
             settingsPopup.style.display = 'none';
             overlay.style.display = 'none';
         }
 
         function connectToTikTok() {
-            if (!usernameInput) {
-                alert('Elemen input nama pengguna tidak ditemukan.');
-                return;
-            }
             const username = usernameInput.value.trim();
             if (username) {
                 if (ws && ws.readyState === WebSocket.OPEN) {
-                    ws.send(JSON.stringify({ type: 'connect', username: username }));
-                    closeSettings();
+                    ws.send(JSON.stringify({ type: 'connect', username }));
                 } else {
-                    alert('Koneksi WebSocket belum siap. Silakan tunggu hingga tersambung kembali.');
+                    alert('Koneksi WebSocket belum siap.');
                 }
             } else {
                 alert('Silakan masukkan nama pengguna.');
@@ -587,42 +305,29 @@
         }
 
         function updateBackground() {
-            if (!enableBackground || !backgroundSelect) return;
             if (enableBackground.checked) {
-                const selectedBackground = backgroundSelect.value;
-                document.body.style.backgroundImage = `url('${selectedBackground}')`;
+                document.body.style.backgroundImage = `url('${backgroundSelect.value}')`;
             } else {
                 document.body.style.backgroundImage = 'none';
                 document.body.style.backgroundColor = '#121212';
             }
         }
-        
-        settingsButton?.addEventListener('click', openSettings);
-        closeButton?.addEventListener('click', closeSettings);
-        connectButton?.addEventListener('click', connectToTikTok);
 
-        volumeKomentar?.addEventListener('input', (event) => {
-            currentKomentarVolume = parseFloat(event.target.value);
-            if (currentAudio) {
-                currentAudio.volume = currentKomentarVolume;
-            }
+        settingsButton.addEventListener('click', openSettings);
+        closeButton.addEventListener('click', closeSettings);
+        connectButton.addEventListener('click', connectToTikTok);
+        volumeKomentar.addEventListener('input', e => {
+            currentKomentarVolume = parseFloat(e.target.value);
+            if (currentAudio) currentAudio.volume = currentKomentarVolume;
         });
-
-        volumeMusik?.addEventListener('input', (event) => {
-            currentKomentarVolume = parseFloat(event.target.value);
-            if (backgroundMusic) {
-                backgroundMusic.volume = currentMusikVolume;
-            }
+        volumeMusik.addEventListener('input', e => {
+            currentMusikVolume = parseFloat(e.target.value);
+            if (backgroundMusic) backgroundMusic.volume = currentMusikVolume;
         });
+        enableTTS.addEventListener('change', e => isTTSEnabled = e.target.checked);
+        enableBackground.addEventListener('change', updateBackground);
+        backgroundSelect.addEventListener('change', updateBackground);
 
-        enableTTS?.addEventListener('change', (event) => {
-            isTTSEnabled = event.target.checked;
-        });
-
-        enableBackground?.addEventListener('change', updateBackground);
-        backgroundSelect?.addEventListener('change', updateBackground);
-        
-        // Initial setup
         initializeWebSocket();
         updateBackground();
     });
