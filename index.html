@@ -1,467 +1,494 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BulTok TikTok Live Stream Interactive | By Sidhanie</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            background-image: url('bg/bg0.jpeg'); /* Default background image */
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            height: 100vh;
-            width: 100vw;
-            color: #333;
-        }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BulTok TikTok Live Stream Interactive | By Sidhanie</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-image: url('bg/bg0.jpeg'); /* Default background image */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            height: 100vh;
+            width: 100vw;
+            color: #333;
+        }
 
-        .sr-only {
-        position: absolute;
-        width: 1px;
-        height: 1px;
-        padding: 0;
-        margin: -1px;
-        overflow: hidden;
-        clip: rect(0, 0, 0, 0);
-        white-space: nowrap;
-        border-width: 0;
-        }
+        .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border-width: 0;
+        }
 
 
-        /* Adjust for smaller devices */
-        @media (max-width: 768px) {
-            body {
-                background-attachment: scroll; /* Disable fixed background on small screens */
-            }
-        }
+        /* Adjust for smaller devices */
+        @media (max-width: 768px) {
+            body {
+                background-attachment: scroll; /* Disable fixed background on small screens */
+            }
+        }
 
-        #settingsButton {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: transparent;
-            color: #fff;
-            text-shadow: 0 0 5px black;
-            border: none;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            font-size: 24px;
-            text-align: center;
-            line-height: 50px;
-            cursor: pointer;
-            z-index: 9000;
-        }
+        #settingsButton {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: transparent;
+            color: #fff;
+            text-shadow: 0 0 5px black;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+            text-align: center;
+            line-height: 50px;
+            cursor: pointer;
+            z-index: 9000;
+        }
 
-        #settingsPopup {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: #fff;
-            border: 1px solid #007bff;
-            padding: 20px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            z-index: 10000;
-            border-radius: 8px;
-            width: 90%;
-            max-width: 320px;
-            text-align: center;
-        }
+        #settingsPopup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            border: 1px solid #007bff;
+            padding: 20px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            z-index: 10000;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 320px;
+            text-align: center;
+        }
 
-        #settingsPopup h2 {
-            margin-top: 0;
-            margin-bottom: 1.5rem;
-            color: #007bff;
-        }
+        #settingsPopup h2 {
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            color: #007bff;
+        }
 
-        #settingsPopup label {
-            display: block;
-            margin-bottom: 0.5rem;
-            text-align: left;
-        }
+        #settingsPopup label {
+            display: block;
+            margin-bottom: 0.5rem;
+            text-align: left;
+        }
 
-        #settingsPopup div {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1rem;
-        }
+        #settingsPopup div {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
 
-        #settingsPopup div label {
-            margin-bottom: 0;
-            margin-left: 0.5rem;
-        }
+        #settingsPopup div label {
+            margin-bottom: 0;
+            margin-left: 0.5rem;
+        }
 
-        #settingsPopup input[type="text"], 
-        #settingsPopup select,
-        #settingsPopup input[type="range"] {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 10px;
-            box-sizing: border-box;
-            border: 1px solid #007bff;
-            border-radius: 5px;
-        }
+        #settingsPopup input[type="text"], 
+        #settingsPopup select,
+        #settingsPopup input[type="range"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+            border: 1px solid #007bff;
+            border-radius: 5px;
+        }
 
-        #settingsPopup button {
-            width: 100%;
-            padding: 10px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 5px;
-        }
+        #settingsPopup button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 5px;
+            transition: background-color 0.3s ease;
+        }
 
-        #settingsPopup button:hover {
-            background-color: #0056b3;
-        }
+        #settingsPopup button:hover {
+            background-color: #0056b3;
+        }
 
-        #settingsPopup #closeButton {
-            background-color: #6c757d;
-        }
+        #settingsPopup #closeButton {
+            background-color: #6c757d;
+        }
 
-        #settingsPopup #closeButton:hover {
-            background-color: #5a6268;
-        }
+        #settingsPopup #closeButton:hover {
+            background-color: #5a6268;
+        }
 
-        #overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 9999;
-        }
+        #overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+        }
 
-        .floating-photo, .big-photo {
-            position: absolute;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background-size: cover;
-            background-position: center;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-            pointer-events: none;
-            z-index: 1000;
-            transition: transform 5s ease-in-out, opacity 1s;
-        }
+        .floating-photo, .big-photo {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-size: cover;
+            background-position: center;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+            pointer-events: none;
+            z-index: 1000;
+            transition: transform 5s ease-in-out, opacity 1s;
+        }
 
-        .big-photo {
-            width: 300px;
-            height: 300px;
-            display: none;
-            border-radius: 50%;
-            padding: 15px;
-        }
+        .big-photo {
+            width: 300px;
+            height: 300px;
+            display: none;
+            border-radius: 50%;
+            padding: 15px;
+        }
 
-        .floating-photo {
-            border: 5px solid limegreen;
-            box-shadow: 0 0 10px limegreen;
-        }
+        .floating-photo {
+            border: 5px solid limegreen;
+            box-shadow: 0 0 10px limegreen;
+        }
 
-        .big-photo.show {
-            display: block;
-        }
-    </style>
+        .big-photo.show {
+            display: block;
+        }
+    </style>
 </head>
 <body>
-    <!-- Settings Button -->
-    <button id="settingsButton" aria-label="Buka Pengaturan">&#9881;</button>
+        <button id="settingsButton" aria-label="Buka Pengaturan">&#9881;</button>
 
-    <!-- Settings Popup -->
-    <div id="overlay"></div>
-    <div id="settingsPopup" role="dialog" aria-labelledby="settingsTitle" aria-modal="true">
-        <h2 id="settingsTitle">Pengaturan</h2>
-        <label for="usernameInput" class="sr-only">Nama Pengguna TikTok</label>
-        <input type="text" id="usernameInput" placeholder="Masukkan nama pengguna TikTok" />
+        <div id="overlay"></div>
+    <div id="settingsPopup" role="dialog" aria-labelledby="settingsTitle" aria-modal="true">
+        <h2 id="settingsTitle">Pengaturan</h2>
+        <label for="usernameInput" class="sr-only">Nama Pengguna TikTok</label>
+        <input type="text" id="usernameInput" placeholder="Masukkan nama pengguna TikTok" />
 
-        <label for="backgroundSelect">Pilih Latar Belakang:</label>
-        <select id="backgroundSelect">
-            <option value="bg/bg0.jpeg">DEFAULT</option>
-            <option value="bg/bg1.jpeg">BG 1</option>
-            <option value="bg/bg2.png">BG 2</option>
-            <option value="bg/bg3.jpg">BG 3</option>
-            <option value="bg/bg4.jpeg">BG 4</option>
-            <option value="bg/bg5.jpg">BG 5</option>
-            <option value="bg/bg6.jpg">BG 6</option>
-            <option value="bg/bg7.jpg">BG 7</option>
-            <option value="bg/bg8.jpg">BG 8</option>
-            <option value="bg/bg9.jpg">BG 9</option>
-            <option value="bg/bg10.jpg">BG 10</option>
-            <option value="bg/bg11.jpg">BG 11</option>
-        </select>
+        <label for="backgroundSelect">Pilih Latar Belakang:</label>
+        <select id="backgroundSelect">
+            <option value="bg/bg0.jpeg">DEFAULT</option>
+            <option value="bg/bg1.jpeg">BG 1</option>
+            <option value="bg/bg2.png">BG 2</option>
+            <option value="bg/bg3.jpg">BG 3</option>
+            <option value="bg/bg4.jpeg">BG 4</option>
+            <option value="bg/bg5.jpg">BG 5</option>
+            <option value="bg/bg6.jpg">BG 6</option>
+            <option value="bg/bg7.jpg">BG 7</option>
+            <option value="bg/bg8.jpg">BG 8</option>
+            <option value="bg/bg9.jpg">BG 9</option>
+            <option value="bg/bg10.jpg">BG 10</option>
+            <option value="bg/bg11.jpg">BG 11</option>
+        </select>
 
-        <div>
-          <input type="checkbox" id="enableBackground" />
-          <label for="enableBackground">Aktifkan Latar Belakang</label>
-        </div>
+        <div>
+          <input type="checkbox" id="enableBackground" />
+          <label for="enableBackground">Aktifkan Latar Belakang</label>
+        </div>
 
-        <label for="volumeKomentar">Volume Suara Komentar:</label>
-        <input type="range" id="volumeKomentar" min="0" max="1" step="0.01" value="0.5" />
+        <label for="volumeKomentar">Volume Suara Komentar:</label>
+        <input type="range" id="volumeKomentar" min="0" max="1" step="0.01" value="0.5" />
 
-        <label for="volumeMusik">Volume Musik:</label>
-        <input type="range" id="volumeMusik" min="0" max="1" step="0.01" value="0.5" />
-        
-        <div>
-          <input type="checkbox" id="enableTTS" />
-          <label for="enableTTS">Aktifkan Text-to-Speech (TTS)</label>
-        </div>
+        <label for="volumeMusik">Volume Musik:</label>
+        <input type="range" id="volumeMusik" min="0" max="1" step="0.01" value="0.5" />
+        
+        <div>
+          <input type="checkbox" id="enableTTS" />
+          <label for="enableTTS">Aktifkan Text-to-Speech (TTS)</label>
+        </div>
 
-        <button id="connectButton">Hubungkan</button>
-        <button id="closeButton">Tutup</button>
-    </div>
+        <button id="connectButton">Hubungkan</button>
+        <button id="closeButton">Tutup</button>
+    </div>
 
-    <script>
-        const ws = new WebSocket(`ws://${window.location.host}`);
-        let isPlaying = false;
-        let currentAudio = null;
-        let backgroundMusic = null;
-        let currentKomentarVolume = 0.5;
-        let currentMusikVolume = 0.5;
-        let isTTSEnabled = false;
+    <script>
+        // REVISI 1: Mendeteksi protokol (http -> ws, https -> wss)
+        const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+        const ws = new WebSocket(`${protocol}://${window.location.host}`);
+        let isPlaying = false;
+        let currentAudio = null;
+        let backgroundMusic = null;
+        let currentKomentarVolume = 0.5;
+        let currentMusikVolume = 0.5;
+        let isTTSEnabled = false;
 
-        const settingsButton = document.getElementById('settingsButton');
-        const settingsPopup = document.getElementById('settingsPopup');
-        const overlay = document.getElementById('overlay');
-        const closeButton = document.getElementById('closeButton');
-        const connectButton = document.getElementById('connectButton');
-        const usernameInput = document.getElementById('usernameInput');
-        const volumeKomentar = document.getElementById('volumeKomentar');
-        const volumeMusik = document.getElementById('volumeMusik');
-        const enableBackground = document.getElementById('enableBackground');
-        const backgroundSelect = document.getElementById('backgroundSelect');
-        const enableTTS = document.getElementById('enableTTS');
+        const settingsButton = document.getElementById('settingsButton');
+        const settingsPopup = document.getElementById('settingsPopup');
+        const overlay = document.getElementById('overlay');
+        const closeButton = document.getElementById('closeButton');
+        const connectButton = document.getElementById('connectButton');
+        const usernameInput = document.getElementById('usernameInput');
+        const volumeKomentar = document.getElementById('volumeKomentar');
+        const volumeMusik = document.getElementById('volumeMusik');
+        const enableBackground = document.getElementById('enableBackground');
+        const backgroundSelect = document.getElementById('backgroundSelect');
+        const enableTTS = document.getElementById('enableTTS');
 
-        ws.onopen = () => {
-            console.log('WebSocket connection established.');
-        };
+        ws.onopen = () => {
+            console.log('WebSocket connection established.');
+            // Opsional: Reset tombol jika sudah terhubung saat refresh
+            connectButton.textContent = 'Hubungkan';
+            connectButton.disabled = false;
+            connectButton.style.backgroundColor = '#007bff';
+        };
 
-        ws.onmessage = (event) => {
-            try {
-                const data = JSON.parse(event.data);
-                console.log('Message from server:', data);
+        ws.onmessage = (event) => {
+            try {
+                const data = JSON.parse(event.data);
+                console.log('Message from server:', data);
 
-                switch (data.type) {
-                    case 'floating-photo':
-                        showFloatingPhoto(data.profilePictureUrl, data.userName);
-                        break;
-                    case 'big-photo':
-                        showBigPhoto(data.profilePictureUrl, data.userName);
-                        break;
-                    case 'play-sound':
-                        playSound(data.sound);
-                        break;
-                    case 'stop-sound':
-                        stopCurrentSound();
-                        break;
-                    case 'play-music':
-                        playBackgroundMusic(data.sound);
-                        break;
-                    case 'tts-greeting':
-                        speak(data.greeting);
-                        break;
-                    case 'chat':
-                        speak(`${data.userName} bilang, ${data.comment}`);
-                        break;
-                    case 'connection-failed':
-                        alert(data.message);
-                        break;
-                    default:
-                        // Abaikan tipe pesan yang tidak dikenal
-                }
-            } catch (error) {
-                console.error("Failed to parse WebSocket message:", error);
-            }
-        };
+                switch (data.type) {
+                    case 'floating-photo':
+                        showFloatingPhoto(data.profilePictureUrl, data.userName);
+                        break;
+                    case 'big-photo':
+                        showBigPhoto(data.profilePictureUrl, data.userName);
+                        break;
+                    case 'play-sound':
+                        playSound(data.sound);
+                        break;
+                    case 'stop-sound':
+                        stopCurrentSound();
+                        break;
+                    case 'play-music':
+                        playBackgroundMusic(data.sound);
+                        break;
+                    case 'tts-greeting':
+                        speak(data.greeting);
+                        break;
+                    case 'chat':
+                        speak(`${data.userName} bilang, ${data.comment}`);
+                        break;
+                    case 'connection-failed':
+                        alert(data.message);
+                        // REVISI 2: Reset status tombol saat gagal koneksi
+                        connectButton.textContent = 'Hubungkan';
+                        connectButton.disabled = false;
+                        connectButton.style.backgroundColor = '#007bff';
+                        break;
+                    case 'connection-success':
+                        // REVISI 2: Tunjukkan koneksi sukses
+                        connectButton.textContent = 'TERHUBUNG (Live)';
+                        connectButton.style.backgroundColor = 'green';
+                        connectButton.disabled = false; // Boleh diklik lagi untuk diskon
+                        settingsPopup.style.display = 'none';
+                        overlay.style.display = 'none';
+                        break;
+                    default:
+                        // Abaikan tipe pesan yang tidak dikenal
+                }
+            } catch (error) {
+                console.error("Failed to parse WebSocket message:", error);
+            }
+        };
 
-        ws.onerror = (error) => {
-            console.error('WebSocket Error:', error);
-            alert('Koneksi ke server gagal. Pastikan server berjalan dan coba segarkan halaman.');
-        };
+        ws.onerror = (error) => {
+            console.error('WebSocket Error:', error);
+            alert('Koneksi ke server gagal. Pastikan server berjalan dan coba segarkan halaman.');
+        };
 
-        ws.onclose = () => {
-            console.log('WebSocket connection closed.');
-        };
+        ws.onclose = () => {
+            console.log('WebSocket connection closed.');
+            // REVISI 2: Reset status tombol saat koneksi putus
+            connectButton.textContent = 'Hubungkan';
+            connectButton.disabled = false;
+            connectButton.style.backgroundColor = '#007bff';
+            alert('Koneksi TikTok terputus.');
+        };
 
-        function showFloatingPhoto(pictureUrl, userName) {
-            const floatingImage = document.createElement('img');
-            floatingImage.src = pictureUrl;
-            floatingImage.alt = `Foto profil ${userName}`;
-            floatingImage.classList.add('floating-photo');
-            document.body.appendChild(floatingImage);
+        function showFloatingPhoto(pictureUrl, userName) {
+            const floatingImage = document.createElement('img');
+            floatingImage.src = pictureUrl;
+            floatingImage.alt = `Foto profil ${userName}`;
+            floatingImage.classList.add('floating-photo');
+            document.body.appendChild(floatingImage);
 
-            const animateImage = () => {
-                const viewportWidth = window.innerWidth;
-                const viewportHeight = window.innerHeight;
-                const imageSize = 50;
-                const x = Math.random() * (viewportWidth - imageSize);
-                const y = Math.random() * (viewportHeight - imageSize);
-                floatingImage.style.transform = `translate(${x}px, ${y}px)`;
-            };
-            
-            animateImage(); // Posisi awal
-            const animationInterval = setInterval(animateImage, 5000);
+            const animateImage = () => {
+                const viewportWidth = window.innerWidth;
+                const viewportHeight = window.innerHeight;
+                const imageSize = 50;
+                const x = Math.random() * (viewportWidth - imageSize);
+                const y = Math.random() * (viewportHeight - imageSize);
+                floatingImage.style.transform = `translate(${x}px, ${y}px)`;
+            };
+            
+            animateImage(); // Posisi awal
+            const animationInterval = setInterval(animateImage, 5000);
 
-            setTimeout(() => {
-                floatingImage.style.opacity = 0;
-                clearInterval(animationInterval);
-                setTimeout(() => {
-                    floatingImage.remove();
-                }, 1000);
-            }, 10000);
-        }
+            setTimeout(() => {
+                floatingImage.style.opacity = 0;
+                clearInterval(animationInterval);
+                setTimeout(() => {
+                    floatingImage.remove();
+                }, 1000);
+            }, 10000);
+        }
 
-        function showBigPhoto(pictureUrl, userName) {
-            const bigPhotoDiv = document.createElement('div');
-            bigPhotoDiv.classList.add('big-photo');
-            bigPhotoDiv.style.backgroundImage = `url(${pictureUrl})`;
-            bigPhotoDiv.setAttribute('role', 'img');
-            bigPhotoDiv.setAttribute('aria-label', `Foto profil besar dari ${userName}`);
+        function showBigPhoto(pictureUrl, userName) {
+            const bigPhotoDiv = document.createElement('div');
+            bigPhotoDiv.classList.add('big-photo');
+            bigPhotoDiv.style.backgroundImage = `url(${pictureUrl})`;
+            bigPhotoDiv.setAttribute('role', 'img');
+            bigPhotoDiv.setAttribute('aria-label', `Foto profil besar dari ${userName}`);
 
-            document.body.appendChild(bigPhotoDiv);
+            document.body.appendChild(bigPhotoDiv);
 
-            bigPhotoDiv.style.position = 'fixed';
-            bigPhotoDiv.style.top = '50%';
-            bigPhotoDiv.style.left = '50%';
-            bigPhotoDiv.style.transform = 'translate(-50%, -50%) scale(0.5)';
-            bigPhotoDiv.style.opacity = '0';
-            bigPhotoDiv.style.transition = 'transform 0.5s ease, opacity 0.5s ease';
-            bigPhotoDiv.style.zIndex = '9999';
+            bigPhotoDiv.style.position = 'fixed';
+            bigPhotoDiv.style.top = '50%';
+            bigPhotoDiv.style.left = '50%';
+            bigPhotoDiv.style.transform = 'translate(-50%, -50%) scale(0.5)';
+            bigPhotoDiv.style.opacity = '0';
+            bigPhotoDiv.style.transition = 'transform 0.5s ease, opacity 0.5s ease';
+            bigPhotoDiv.style.zIndex = '9999';
 
-            setTimeout(() => {
-                bigPhotoDiv.classList.add('show');
-                bigPhotoDiv.style.transform = 'translate(-50%, -50%) scale(1)';
-                bigPhotoDiv.style.opacity = '1';
-            }, 100);
+            setTimeout(() => {
+                bigPhotoDiv.classList.add('show');
+                bigPhotoDiv.style.transform = 'translate(-50%, -50%) scale(1)';
+                bigPhotoDiv.style.opacity = '1';
+            }, 100);
 
-            setTimeout(() => {
-                bigPhotoDiv.style.transform = 'translate(-50%, -50%) scale(0.5)';
-                bigPhotoDiv.style.opacity = '0';
-                setTimeout(() => {
-                    bigPhotoDiv.remove();
-                }, 500);
-            }, 10000);
-        }
+            setTimeout(() => {
+                bigPhotoDiv.style.transform = 'translate(-50%, -50%) scale(0.5)';
+                bigPhotoDiv.style.opacity = '0';
+                setTimeout(() => {
+                    bigPhotoDiv.remove();
+                }, 500);
+            }, 10000);
+        }
 
-        function playSound(soundUrl) {
-            if (isPlaying) return;
+        function playSound(soundUrl) {
+            if (isPlaying) return;
 
-            currentAudio = new Audio(soundUrl);
-            currentAudio.volume = currentKomentarVolume;
-            currentAudio.play().catch(e => console.error("Error playing audio:", e));
-            isPlaying = true;
+            currentAudio = new Audio(soundUrl);
+            currentAudio.volume = currentKomentarVolume;
+            currentAudio.play().catch(e => console.error("Error playing audio:", e));
+            isPlaying = true;
 
-            currentAudio.onended = () => {
-                isPlaying = false;
-                currentAudio = null;
-            };
-        }
-        
-        function stopCurrentSound() {
-            if (isPlaying && currentAudio) {
-                currentAudio.pause();
-                currentAudio.currentTime = 0;
-                currentAudio.onended = null; // Mencegah onended terpicu setelah dihentikan manual
-                currentAudio = null;
-                isPlaying = false;
-            }
-        }
+            currentAudio.onended = () => {
+                isPlaying = false;
+                currentAudio = null;
+            };
+        }
+        
+        function stopCurrentSound() {
+            if (isPlaying && currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+                currentAudio.onended = null; // Mencegah onended terpicu setelah dihentikan manual
+                currentAudio = null;
+                isPlaying = false;
+            }
+        }
 
-        function playBackgroundMusic(soundUrl) {
-            if (backgroundMusic) {
-                backgroundMusic.pause();
-                backgroundMusic.src = soundUrl;
-            } else {
-                backgroundMusic = new Audio(soundUrl);
-            }
-            backgroundMusic.volume = currentMusikVolume;
-            backgroundMusic.loop = true;
-            backgroundMusic.play().catch(e => console.error("Error playing background music:", e));
-        }
+        function playBackgroundMusic(soundUrl) {
+            if (backgroundMusic) {
+                backgroundMusic.pause();
+                backgroundMusic.src = soundUrl;
+            } else {
+                backgroundMusic = new Audio(soundUrl);
+            }
+            backgroundMusic.volume = currentMusikVolume;
+            backgroundMusic.loop = true;
+            backgroundMusic.play().catch(e => console.error("Error playing background music:", e));
+        }
 
-        function speak(text) {
-            if (!isTTSEnabled || !('speechSynthesis' in window)) {
-                return;
-            }
-            
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'id-ID'; // Set language to Indonesian
-            window.speechSynthesis.speak(utterance);
-        }
+        function speak(text) {
+            if (!isTTSEnabled || !('speechSynthesis' in window)) {
+                return;
+            }
+            
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'id-ID'; // Set language to Indonesian
+            window.speechSynthesis.speak(utterance);
+        }
 
-        settingsButton.addEventListener('click', () => {
-            settingsPopup.style.display = 'block';
-            overlay.style.display = 'block';
-            volumeKomentar.value = currentKomentarVolume;
-            volumeMusik.value = currentMusikVolume;
-            enableTTS.checked = isTTSEnabled;
-        });
+        settingsButton.addEventListener('click', () => {
+            settingsPopup.style.display = 'block';
+            overlay.style.display = 'block';
+            volumeKomentar.value = currentKomentarVolume;
+            volumeMusik.value = currentMusikVolume;
+            enableTTS.checked = isTTSEnabled;
+        });
 
-        closeButton.addEventListener('click', () => {
-            settingsPopup.style.display = 'none';
-            overlay.style.display = 'none';
-        });
+        closeButton.addEventListener('click', () => {
+            settingsPopup.style.display = 'none';
+            overlay.style.display = 'none';
+        });
 
-        connectButton.addEventListener('click', () => {
-            const username = usernameInput.value.trim();
-            if (username) {
-                if (ws.readyState === WebSocket.OPEN) {
-                    ws.send(JSON.stringify({ type: 'connect', username: username }));
-                    settingsPopup.style.display = 'none';
-                    overlay.style.display = 'none';
-                } else {
-                    alert('Koneksi WebSocket belum siap. Silakan coba lagi.');
-                }
-            } else {
-                alert('Silakan masukkan nama pengguna.');
-            }
-        });
+        connectButton.addEventListener('click', () => {
+            const username = usernameInput.value.trim();
+            if (username) {
+                if (ws.readyState === WebSocket.OPEN) {
+                    // REVISI 2: Perubahan status tombol saat proses koneksi dimulai
+                    connectButton.textContent = 'Menghubungkan...';
+                    connectButton.disabled = true;
+                    connectButton.style.backgroundColor = 'orange';
 
-        volumeKomentar.addEventListener('input', (event) => {
-            currentKomentarVolume = event.target.value;
-            if (currentAudio) {
-                currentAudio.volume = currentKomentarVolume;
-            }
-        });
+                    ws.send(JSON.stringify({ type: 'connect', username: username }));
+                    // Biarkan popup tetap terbuka sebentar atau tutup di respon 'connection-success'
+                    // Disarankan tutup di respon sukses dari server (sudah ditambahkan case 'connection-success')
 
-        volumeMusik.addEventListener('input', (event) => {
-            currentMusikVolume = event.target.value;
-            if (backgroundMusic) {
-                backgroundMusic.volume = currentMusikVolume;
-            }
-        });
+                } else {
+                    alert('Koneksi WebSocket belum siap. Silakan coba lagi.');
+                }
+            } else {
+                alert('Silakan masukkan nama pengguna.');
+            }
+        });
 
-        enableTTS.addEventListener('change', (event) => {
-            isTTSEnabled = event.target.checked;
-        });
- 
-        function updateBackground() {
-            if (enableBackground.checked) {
-                const selectedBackground = backgroundSelect.value;
-                document.body.style.backgroundImage = `url('${selectedBackground}')`;
-            } else {
-                document.body.style.backgroundImage = 'none';
-                document.body.style.backgroundColor = '#121212';
-            }
-        }
+        volumeKomentar.addEventListener('input', (event) => {
+            currentKomentarVolume = event.target.value;
+            if (currentAudio) {
+                currentAudio.volume = currentKomentarVolume;
+            }
+        });
 
-        enableBackground.addEventListener('change', updateBackground);
-        backgroundSelect.addEventListener('change', updateBackground);
+        volumeMusik.addEventListener('input', (event) => {
+            currentMusikVolume = event.target.value;
+            if (backgroundMusic) {
+                backgroundMusic.volume = currentMusikVolume;
+            }
+        });
 
-        // Inisialisasi latar belakang saat memuat
-        updateBackground();
-    </script>
+        enableTTS.addEventListener('change', (event) => {
+            isTTSEnabled = event.target.checked;
+        });
+ 
+        function updateBackground() {
+            if (enableBackground.checked) {
+                const selectedBackground = backgroundSelect.value;
+                document.body.style.backgroundImage = `url('${selectedBackground}')`;
+            } else {
+                document.body.style.backgroundImage = 'none';
+                document.body.style.backgroundColor = '#121212';
+            }
+        }
+
+        enableBackground.addEventListener('change', updateBackground);
+        backgroundSelect.addEventListener('change', updateBackground);
+
+        // Inisialisasi latar belakang saat memuat
+        updateBackground();
+    </script>
 </body>
 </html>
